@@ -546,6 +546,17 @@ button.big{min-height:50px;padding:12px 24px;font-size:1.02rem;border-radius:14p
   .bytopic button{grid-template-columns:1fr auto;gap:6px 12px}
   .bt{grid-column:1/-1}.bs{grid-column:1}.bn{grid-column:2}
 }
+.kl{margin:.5rem 0 0;padding-left:1.1rem;display:grid;gap:.55rem;line-height:1.5}
+.cmp{width:100%;border-collapse:collapse;font-size:.92rem}.cmp th,.cmp td{border:1px solid var(--line,#ddd);padding:.5rem;text-align:left;vertical-align:top}
+.tblw{overflow-x:auto}
+.flashc{display:block;width:100%;text-align:left;padding:1rem;border:1px solid var(--line,#ddd);border-radius:12px;background:transparent;color:inherit;font:inherit;min-height:7rem}
+.flashc b{display:block;margin-bottom:.5rem}.flashc span{opacity:.85}
+#gnav{grid-template-columns:repeat(5,1fr)}
+.rpidx{display:flex;flex-wrap:wrap;gap:.4rem;margin:.5rem 0 1rem}.rpidx a{padding:.35rem .7rem;border:1px solid var(--rule,#ddd);border-radius:99px;font-size:.85rem;text-decoration:none;color:inherit}
+.rp h3{margin:1rem 0 .25rem;font-size:1rem}.rp p{line-height:1.6}.rp .foco{padding:.7rem .9rem;border-left:3px solid var(--accent,#2b5cd6);background:rgba(43,92,214,.07);border-radius:6px}
+.badge{font-size:.75rem;padding:.2rem .6rem;border-radius:99px;border:1px solid var(--rule,#ddd);white-space:nowrap}.badge.p5{background:#c0392b;color:#fff;border-color:#c0392b}.badge.p4{background:#d98e04;color:#fff;border-color:#d98e04}
+.kl.mem li{font-weight:600}
+.btn{display:inline-block;padding:.5rem .9rem;border:1px solid var(--rule,#ddd);border-radius:10px;text-decoration:none;color:inherit}
 </style>
 
 </head>
@@ -2284,7 +2295,465 @@ function planGo(t){
  if(t.k!=="simulacro"){ simFocus=t.g; simOpen["top:"+t.g]=true }
  if(location.hash==="#simulacro") simPage(); else location.hash="simulacro";
 }
+
+/* ============ CLAVES DEL EXAMEN ============ */
+const EXAM_DATE="2026-11-08";
+const examDias=()=>{const a=new Date(EXAM_DATE+"T00:00:00"),b=new Date();b.setHours(0,0,0,0);return Math.round((a-b)/864e5)};
+const CLAVES=[
+ {id:"k-proc",t:"Procedimiento tributario (ET)",g:"g-procedimiento",peso:"Alto",
+  pts:[["Firmeza de la declaración","3 años desde el vencimiento del plazo para declarar si no se notificó requerimiento especial (art. 714). Corrección que aumenta el impuesto: 3 años (art. 588)."],
+  ["Requerimiento especial","Se notifica en máx. 3 años (art. 705). El contribuyente responde en 3 meses (art. 707). Es previo y obligatorio a la liquidación de revisión (art. 703)."],
+  ["Liquidación de revisión","6 meses después de vencido el término de respuesta al requerimiento (art. 710). Solo se puede modificar la liquidación privada una vez (art. 702)."],
+  ["Liquidación de aforo","Para quien no declara: emplazamiento previo (art. 715) y aforo dentro de 5 años (art. 717)."],
+  ["Recurso de reconsideración","2 meses desde la notificación (art. 720). La Administración tiene 1 año para resolver (art. 732). Si no resuelve, silencio a favor del recurrente (art. 734)."],
+  ["Emplazamiento para corregir","El contribuyente tiene 1 mes para corregir (art. 685)."],
+  ["Cobro coactivo","Mandamiento de pago: 15 días para pagar o proponer excepciones (art. 830). Orden de ejecución sin recurso (art. 836). Solo se demandan las resoluciones que fallan excepciones y ordenan seguir la ejecución (art. 835)."],
+  ["Devoluciones","50 días para devolver renta e IVA (art. 855). Auto inadmisorio en máx. 15 días (art. 858)."],
+  ["Pruebas","Los hechos se prueban con el expediente (art. 742). Las dudas por vacíos probatorios favorecen al contribuyente (art. 745). Confesión ficta por respuesta evasiva (art. 748). Libros no exhibidos: indicio en contra (art. 781)."],
+  ["Competencias","Fiscalización profiere requerimientos y emplazamientos (art. 688). Liquidación profiere liquidaciones oficiales (art. 691)."]]},
+ {id:"k-sanc",t:"Sanciones tributarias (ET)",g:"g-estatuto",peso:"Alto",
+  pts:[["Sanción mínima","10 UVT (art. 639)."],
+  ["Inexactitud","160 % de la diferencia entre lo liquidado oficialmente y lo declarado (art. 647). Sube a 200 % si se omiten activos o se incluyen pasivos inexistentes (art. 648)."],
+  ["Extemporaneidad","Se cobra por cada mes o fracción de mes de retardo (art. 641); con emplazamiento previo es mayor (art. 642)."],
+  ["No declarar","Sanción por omisión de la declaración (art. 643), precedida del emplazamiento (art. 715)."],
+  ["Corrección","Sanción por corrección según el momento: antes o después del emplazamiento o auto de inspección (art. 644)."],
+  ["Principios sancionatorios","Lesividad, proporcionalidad, gradualidad y favorabilidad (art. 640)."],
+  ["Proveedor ficticio","Compras a proveedores declarados ficticios no son deducibles ni dan IVA descontable (art. 671)."],
+  ["Prescripción de sanciones","En liquidación oficial, mismo plazo de la liquidación; en resolución independiente, el plazo propio (art. 638)."]]},
+ {id:"k-camb",t:"Régimen cambiario",g:"g-cambiario",peso:"Alto",
+  pts:[["Marco","Decreto Ley 2245 de 2011 (infracciones y procedimiento sancionatorio), Resolución Externa 1 de 2018 del Banco de la República, Resolución 180 de 2012 y Circular DCIN-83."],
+  ["Lo que cae","Qué es operación de cambio obligatoria canalizable, quién es competente, tipos de infracción, caducidad, prescripción y procedimiento (pliego de cargos, descargos, sanción)."],
+  ["Cómo estudiarlo","Haz las preguntas del tema en modo práctica y lee en cada respuesta el texto de la norma que se muestra."]]},
+ {id:"k-adu",t:"Régimen aduanero",g:"g-aduanero",peso:"Muy alto",
+  pts:[["Ojo con la vigencia","El examen aplica normas vigentes y expedidas antes del 19-jun-2026. La Ley 2586 de 2026 queda en zona gris: estudia el régimen anterior (Decreto Ley 920/2023 y Decreto 1165/2019) y memoriza qué cambió con la Ley 2586."],
+  ["Regla práctica","Si una opción coincide con el régimen anterior y otra con la Ley 2586, mira cuál mencionan el enunciado y las demás opciones; el banco de preguntas marca ambas en la nota."],
+  ["Qué cae","Sanciones aduaneras, aprehensión y decomiso, valoración, allanamiento, liquidación oficial, caducidad y principios."]]},
+ {id:"k-fisc",t:"Fiscalización, LAFT e internacional",g:"g-fiscalizacion",peso:"Alto",
+  pts:[["Facultades","La Administración puede verificar declaraciones, cruzar información, pedir pruebas, practicar inspecciones y ordenar visitas (art. 684)."],
+  ["Inspecciones","Tributaria (art. 779) y contable (art. 782). Los libros se exhiben en el establecimiento del contribuyente (art. 780)."],
+  ["Abuso tributario","La DIAN puede recaracterizar operaciones (art. 869) cuando hay vinculados, paraísos fiscales o régimen tributario especial (art. 869-1)."],
+  ["Reserva","Los expedientes de determinación oficial son reservados (art. 693)."]]},
+ {id:"k-rut",t:"RUT y deberes formales",g:"g-fiscalizacion",peso:"Medio",
+  pts:[["Fuente","Resolución 227 de 2022 y Circular 1 de 2023 (preguntas t1q4 a t1q15 del banco). Las respuestas del banco muestran el texto aplicable."]]}
+];
+const PJS=[
+ "Lee primero las opciones: casi siempre dos son claramente falsas. Descártalas y decide entre las otras.",
+ "Los plazos y porcentajes son el punto de quiebre: el examen cambia 3 por 5 años o 2 por 3 meses. Memoriza los números de este resumen.",
+ "En «PJS» cada opción es una situación distinta: no mezcles el caso de una pregunta con el de la otra.",
+ "Palabras absolutas («siempre», «nunca», «solo») suelen indicar opción falsa; «puede» suele ser verdadera.",
+ "Una pregunta con la norma citada se responde con ese artículo, no con lo que parece lógico.",
+ "No dejes preguntas en blanco: no hay indicio de que resten puntos, salvo lo que diga tu guía.",
+ "Las competencias funcionales son eliminatorias con mínimo 70/100: dedica la mayor parte del tiempo a procedimiento, aduanero y cambiario."
+];
+const COMPARA=[
+ ["Norma base","Decreto Ley 920 de 2023 y Decreto 1165 de 2019","Ley 2586 de 2026"],
+ ["Vigencia para el examen","Expedida antes del 19-jun-2026: entra","Zona gris: puede quedar fuera"],
+ ["Cómo usarla","Es la respuesta esperada si la pregunta sigue la guía","Úsala como referencia y mira la nota de cada pregunta"]
+];
+function clavesFlash(){ return PLAZOS_FLASH.map(([q,a])=>({t:'Plazos y cifras',q,a})).concat(CLAVES.flatMap(c=>c.pts.map(([a,b])=>({t:c.t,q:a,a:b})))) }
+let flashI=0, flashOn=false;
+function clavesPage(){
+ const d=examDias(), dTxt=d>1?`Faltan ${d} días`:d===1?"Es mañana":d===0?"Es hoy":"El examen ya pasó";
+ let h=`<section class="pagehead"><p class="muted cap">Examen · 8 de noviembre de 2026</p><h1>Claves del examen</h1>
+ <p class="lead"><b>${dTxt}.</b> Lo esencial por tema, con los números que más se preguntan. Nadie puede saber las preguntas exactas: esto cubre lo que la guía oficial y las normas citadas hacen más probable.</p></section>
+ <section class="card"><h2>Datos del examen</h2><ul class="kl"><li>Convocatoria DIAN 2676, cargo Gestor I.</li><li>Prueba escrita de opción múltiple; las funcionales son eliminatorias con mínimo 70/100.</li><li>Peso: 65 % funcionales, 25 % básicas, 10 % comportamentales.</li><li>Normas vigentes y expedidas antes del 19-jun-2026.</li></ul>
+ <div class="row"><a class="btn primary" href="#repaso">📚 Repaso completo en audio</a> <a class="btn primary" href="#infracciones">⚖️ Infracciones y sanciones (todo)</a> <button id="clAudio">🔊 Escuchar claves</button></div></section>
+ <section class="card"><h2>Trucos para responder</h2><ul class="kl">${PJS.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></section>
+ <section class="card"><h2>Ley 2586 frente al régimen anterior</h2><div class="tblw"><table class="cmp"><thead><tr><th></th><th>Régimen anterior</th><th>Ley 2586</th></tr></thead><tbody>${COMPARA.map(r=>`<tr><th>${esc(r[0])}</th><td>${esc(r[1])}</td><td>${esc(r[2])}</td></tr>`).join("")}</tbody></table></div></section>`;
+ CLAVES.forEach(c=>{ h+=`<section class="card clave" id="${c.id}"><div class="th"><h2>${esc(c.t)}</h2><span class="muted">Peso: ${esc(c.peso)}</span></div><ul class="kl">${c.pts.map(([a,b])=>`<li><b>${esc(a)}.</b> ${esc(b)}</li>`).join("")}</ul><p><a href="#${c.g}">Abrir el tema completo</a></p></section>` });
+ h+=`<section class="card"><h2>Tarjetas de repaso</h2><div id="flash"></div></section>
+ <p class="note">Las cifras provienen del texto del Estatuto Tributario y de las normas cargadas en esta app. Confirma la vigencia en el Normograma DIAN.</p>`;
+ app.innerHTML=h; document.title="Claves del examen · Estudio DIAN Gestor I";
+ const F=clavesFlash(); flashOn=false;
+ const draw=()=>{const f=F[flashI]; document.getElementById("flash").innerHTML=`<p class="muted small">${esc(f.t)} · ${flashI+1} de ${F.length}</p><button class="flashc" id="fc"><b>${esc(f.q)}</b><span>${flashOn?esc(f.a):"Toca para ver la respuesta"}</span></button><div class="row"><button id="fp">Anterior</button><button id="fn" class="primary">Siguiente</button></div>`;
+  document.getElementById("fc").onclick=()=>{flashOn=!flashOn;draw()};
+  document.getElementById("fp").onclick=()=>{flashI=(flashI-1+F.length)%F.length;flashOn=false;draw()};
+  document.getElementById("fn").onclick=()=>{flashI=(flashI+1)%F.length;flashOn=false;draw()}};
+ draw();
+ document.getElementById("clAudio").onclick=()=>ttsPlay(CLAVES.map(c=>c.t+". "+c.pts.map(p=>p[0]+". "+p[1]).join(" ")).join(" "),"Claves del examen",null);
+ window.scrollTo(0,0);
+}
+
+
+/* ============ REPASO EN AUDIO: consolidado detallado por tema ============ */
+const RP=[
+{id:"r-adu",g:"g-aduanero",t:"Régimen aduanero",prio:5,
+ foco:"Es el tema con más preguntas y el que más casos trae. Salen casos con un enunciado largo y cuatro preguntas: sanción aplicable, aprehensión, valoración, allanamiento, liquidación oficial y caducidad.",
+ b:[
+ ["La idea central","La obligación aduanera es el vínculo jurídico entre la DIAN y quien interviene en cualquier régimen u operación aduanera (D. 1165, art. 4). Es personal, pero se puede hacer efectiva sobre la mercancía mediante abandono o decomiso (art. 6). Los obligados son directos (los usuarios aduaneros) e indirectos (quien interviene sin ser usuario, o es requerido por la autoridad) (art. 7). El importador debe acreditar la legal introducción de la mercancía (art. 8)."],
+ ["Declarantes y levante","Solo pueden declarar las agencias de aduanas y los demás sujetos del art. 32 (por ejemplo, almacenes generales de depósito autorizados). El levante, o autorización de pago, procede si los servicios informáticos lo determinan o si la inspección documental o física muestra conformidad entre lo declarado y los documentos (art. 185). Si se formula requerimiento especial aduanero y el declarante corrige, paga las sanciones y los mayores valores en 5 días, procede el levante (art. 186)."],
+ ["Aprehensión y decomiso","La aprehensión inicia con un acta (art. 660) y suspende el levante (art. 661). El titular o responsable tiene 15 días hábiles para presentar el documento de objeción con pruebas de legal introducción (art. 664). Puede pedir entrega de la mercancía con garantía del 100 % del valor FOB (art. 662). El decomiso directo se hace en la misma diligencia (art. 667) y solo procede en casos tasados: mercancía de valor bajo, hidrocarburos, licores, tabaco, perfumes, animales vivos, prohibida importación, entre otros. Contra el acta de decomiso directo solo procede el recurso de reconsideración (art. 668)."],
+ ["Causales de aprehensión (art. 647)","Memoriza la lógica: mercancía no presentada, sin documentos que la amparen, no declarada, diferente a la descargada, sobrantes, prohibida, restricciones no superadas, documentos adulterados o que no corresponden, y doble facturación. Si la causal se detecta después del levante, se sigue el procedimiento de cancelación del levante (art. 650)."],
+ ["Sanciones","Las infracciones se clasifican en leves, graves y gravísimas. Ejemplo: sustraer o sustituir mercancía sujeta a control es gravísima y la multa es del 100 % del valor FOB (art. 615 del D. 1165). Agencias de aduanas, UAP y ALTEX pueden recibir suspensión o cancelación en lugar de multa."],
+ ["Ley 2586 de 2026 (referencia)","Principios: favorabilidad, legalidad, tipicidad, non bis in idem, proporcionalidad, buena fe, lesividad y debida diligencia, cuya carga de la prueba es del investigado (art. 2). Medidas cautelares: aprehensión, suspensión, inmovilización, retención, custodia, entre otras (art. 7). Gestión persuasiva: 1 mes para corregir o allanarse (art. 5). Requerimiento de información: 15 días hábiles prorrogables (art. 4). Sanciones: amonestación, multa, suspensión y cancelación (art. 14)."]],
+ t2:["Las cifras en UVT y los plazos cambian entre D. 1165, D. Ley 920 de 2023 y Ley 2586. El examen aplica normas expedidas antes del 19 de junio de 2026: lee el enunciado, identifica con qué régimen cuadran las demás opciones y revisa la nota de cada pregunta en la pestaña Practicar.","No confundas aprehensión (medida) con decomiso (decisión de fondo).","La objeción a la aprehensión son 15 días hábiles, no calendario."],
+ m:["Obligación aduanera: art. 4 a 8 del D. 1165","Levante: art. 185 y 186","Aprehensión: acta 660, objeción 15 días hábiles, garantía 100 % FOB","Decomiso directo: art. 667 y 668, solo reconsideración","Sustraer o sustituir mercancía: multa 100 % del FOB"]},
+{id:"r-proc",g:"g-procedimiento",t:"Procedimiento tributario (ET)",prio:5,
+ foco:"Núcleo de las competencias funcionales. Preguntan plazos, quién es competente, qué recurso procede y cuándo queda en firme o prescribe algo.",
+ b:[
+ ["Actuación y notificaciones","Se actúa personalmente o por representante o apoderado (art. 555). Solo los abogados pueden ser agentes oficiosos para contestar requerimientos e interponer recursos (art. 557). Las actuaciones se notifican a la dirección informada en la última declaración o mediante formato oficial de cambio de dirección (art. 563), o a la dirección procesal que el contribuyente señale (art. 564). Formas: electrónica, personal o por correo (art. 565). Si el correo se devuelve, se notifica por aviso en el portal web de la DIAN (art. 568). Toda notificación debe dejar constancia de los recursos que proceden (art. 570)."],
+ ["Declaraciones no presentadas","No se entiende cumplido el deber de declarar cuando la declaración no se presenta en los lugares señalados, no identifica al declarante, no contiene los factores para identificar las bases o no está firmada por quien debe, o por el contador o revisor fiscal obligado (art. 580)."],
+ ["Correcciones","Si la corrección aumenta el impuesto o disminuye el saldo a favor: 3 años desde el vencimiento del plazo (art. 588). Si disminuye el impuesto o aumenta el saldo a favor: dentro del año siguiente al vencimiento (art. 589), y la facultad de revisión se cuenta desde la corrección."],
+ ["Determinación en cadena","1) Emplazamiento para corregir: el contribuyente tiene 1 mes y no responder no genera sanción (art. 685). 2) Requerimiento especial, por una sola vez y previo a la liquidación de revisión (art. 703); se notifica máximo en 3 años (art. 705). 3) Respuesta en 3 meses (art. 707). 4) Ampliación, por una sola vez, dentro de los 3 meses siguientes (art. 708). 5) Liquidación de revisión: 6 meses después del vencimiento del plazo de respuesta (art. 710); solo puede referirse a lo contemplado en el requerimiento (art. 711). 6) La declaración queda en firme si en 3 años no se notificó requerimiento especial (art. 714)."],
+ ["Liquidación de corrección aritmética y aforo","Corrección aritmética: dentro de los 2 años siguientes a la presentación (art. 699). Aforo: para quien no declara, previo emplazamiento (art. 715), dentro de los 5 años siguientes al vencimiento del plazo para declarar (art. 717). Las liquidaciones de revisión y aforo se inscriben y garantizan el pago (arts. 719-1 y 719-2)."],
+ ["Discusión","Recurso de reconsideración: 2 meses desde la notificación (art. 720). La Administración tiene 1 año para resolverlo (art. 732) y, si no, hay silencio a favor del recurrente (art. 734). El auto inadmisorio se dicta dentro del mes siguiente (art. 726) y contra él solo cabe reposición en 5 días (art. 728). Revocatoria directa: 2 años desde la ejecutoria (art. 737). Causales de nulidad: funcionario incompetente, omitir el requerimiento especial, entre otras (art. 730)."],
+ ["Cobro coactivo","El mandamiento de pago se notifica personalmente tras citación para comparecer en 10 días (art. 826). Para pagar o proponer excepciones hay 15 días (art. 830). Prestan mérito ejecutivo las liquidaciones privadas, las oficiales ejecutoriadas y demás actos ejecutoriados (art. 828). Solo son demandables las resoluciones que fallan excepciones y ordenan seguir adelante (art. 835). El acuerdo de pago suspende el cobro (art. 841)."],
+ ["Devoluciones","Se solicitan máximo 2 años después del vencimiento del plazo para declarar (art. 854). La Administración devuelve renta e IVA en 50 días (art. 855). El auto inadmisorio se dicta en máximo 15 días (art. 858). La devolución se hace tras compensar deudas vencidas (art. 861). Con garantía bancaria o de seguros se devuelve más rápido (art. 860)."]],
+ t2:["Confundir plazos: reconsideración son 2 meses; respuesta al requerimiento especial son 3 meses; emplazar para corregir es 1 mes.","El requerimiento especial no se repite: es una sola vez (la ampliación también es una sola vez).","Silencio administrativo: aquí favorece al recurrente.","Competencia: Fiscalización profiere requerimientos (art. 688); Liquidación profiere liquidaciones (art. 691); Recursos Tributarios falla los recursos (art. 721)."],
+ m:["3 años: firmeza y requerimiento especial","6 meses: liquidación de revisión","2 meses: reconsideración · 1 año para resolver","15 días: excepciones en cobro · 50 días: devolución","5 años: aforo · 2 años: corrección aritmética"]},
+{id:"r-est",g:"g-estatuto",t:"Estatuto Tributario: sustancial, sanciones y pruebas",prio:5,
+ foco:"La guía fija artículos concretos: 1, 26, 58, 59, 107, 742 a 753, 778 a 785, 869, 869-1, 647 y 648. Esos artículos son los que se preguntan.",
+ b:[
+ ["Obligación sustancial (art. 1)","Nace al realizarse el hecho generador y su objeto es el pago del tributo."],
+ ["Depuración de la renta (art. 26)","Ingresos ordinarios y extraordinarios realizados, menos devoluciones, rebajas y descuentos, dan los ingresos netos; luego se restan costos y deducciones para llegar a la renta líquida."],
+ ["Realización del costo (arts. 58 y 59)","No obligados a llevar contabilidad: el costo se realiza cuando se paga efectivamente o la deuda se extingue de forma equivalente. Obligados a llevar contabilidad: el costo se realiza cuando se devenga contablemente, con las excepciones que la ley fije."],
+ ["Expensas necesarias (art. 107)","Son deducibles si hay relación de causalidad con la actividad productora de renta y son necesarias y proporcionadas."],
+ ["Pruebas","Los tributos y sanciones se fundan en hechos probados en el expediente (art. 742). La idoneidad depende de la ley y, si no, de la conexión con el hecho y el valor de convencimiento (art. 743). Dudas por vacíos probatorios que no se puedan eliminar se resuelven a favor del contribuyente (art. 745). Se presumen ciertos los hechos de las declaraciones, salvo comprobación especial (art. 746). Confesión por escrito del contribuyente es plena prueba, solo se desvirtúa con error o fuerza (art. 747). Confesión ficta por respuesta evasiva o contradictoria (art. 748). Información de terceros vale como testimonio (art. 750). El testimonio no sirve para lo que debe constar por escrito (art. 752)."],
+ ["Inspecciones y peritos","Inspección tributaria: constatación directa de hechos (art. 779). Libros de contabilidad se presentan en el establecimiento del obligado (art. 780). No presentarlos es indicio en contra y se desconocen costos y deducciones (art. 781). Inspección contable: art. 782. Perito: lo nombra la Administración y el dictamen se valora con sana crítica (arts. 784 y 785)."],
+ ["Inexactidad (arts. 647 y 648)","Es usar datos falsos, equivocados, incompletos o desfigurados que generan menor impuesto o mayor saldo a favor. Sanción: 160 % de la diferencia. Sube a 200 % si se omiten activos o se incluyen pasivos inexistentes (art. 648). No hay inexactitud por diferencias de criterio sobre el derecho aplicable cuando los hechos están completos (regla del art. 647, verifícala en el texto)."],
+ ["Abuso en materia tributaria (arts. 869 y 869-1)","La DIAN puede recaracterizar la operación y desconocer sus efectos cuando hay actos o negocios artificiosos, sin propósito económico o comercial aparente, para obtener provecho tributario, sin importar la intención subjetiva. Supuestos del 869-1: entre vinculados, uso de paraísos fiscales, entidades del régimen tributario especial, entre otros."]],
+ t2:["Confesión: la expresa es plena prueba; la ficta se presume por respuesta evasiva.","Duda probatoria: favorece al contribuyente.","Costo realizado: contabilidad obligada = devengo; no obligada = pago."],
+ m:["Inexactitud 160 %, 200 % si omite activos o infla pasivos","Sanción mínima 10 UVT (art. 639)","Extemporaneidad: 5 % mensual del impuesto, máximo 100 % (art. 641)","No declarar renta: 20 % de consignaciones o ingresos (art. 643)"]},
+{id:"r-fisc",g:"g-fiscalizacion",t:"Fiscalización y liquidación",prio:5,
+ foco:"Arts. 684, 685, 686, 688, 697 a 719-2. Se pregunta el orden del proceso y los términos.",
+ b:[
+ ["Facultades (art. 684)","Verificar declaraciones, investigar hechos no declarados, citar a contribuyentes y terceros, exigir documentos y libros, examinar libros y hacer las diligencias necesarias. Incluye revisar estados financieros, sus soportes y sistemas de reconocimiento y medición."],
+ ["Deber de atender (art. 686) y valor de las opiniones (art. 687)","Contribuyentes y no contribuyentes deben atender los requerimientos. Las opiniones de terceros sobre hechos que la Administración debe calificar no la obligan."],
+ ["Competencias","El jefe de fiscalización profiere requerimientos especiales, pliegos, emplazamientos y actos de trámite (art. 688). El jefe de liquidación profiere ampliaciones, liquidaciones de revisión, corrección y aforo (art. 691)."],
+ ["Liquidación de corrección aritmética (697 a 701)","Hay error aritmético cuando, con hechos y bases bien declarados, se anota un resultado equivocado o se aplica mal la tarifa. Se corrige dentro de 2 años desde la presentación. Si faltan sanciones o se liquidaron mal, se liquidan incrementadas en 30 % (art. 701)."],
+ ["Liquidación de revisión (702 a 714)","Se modifica la liquidación privada una sola vez (art. 702), con requerimiento especial previo (art. 703) que cuantifica impuestos y sanciones (art. 704). La liquidación se limita a los hechos del requerimiento (art. 711). Si el contribuyente acepta hechos en la respuesta, la sanción por inexactitud baja (art. 709); si acepta en el recurso, se reduce a la mitad (art. 713)."],
+ ["Aforo (715 a 719)","Emplazamiento previo por no declarar, luego liquidación de aforo en 5 años, con el mismo contenido de la de revisión más la explicación del aforo."],
+ ["Inscripción (719-1 y 719-2)","Se inscriben las liquidaciones de revisión o aforo y las resoluciones de sanción notificadas. Los bienes inscritos son garantía real del pago y la DIAN puede perseguirlos sin importar quién los tenga."]],
+ t2:["Orden: emplazamiento para corregir, requerimiento especial, respuesta, ampliación, liquidación de revisión.","El aforo exige emplazamiento previo; la revisión exige requerimiento especial."],
+ m:["Corrección aritmética: 2 años","Revisión: requerimiento 3 años + respuesta 3 meses + liquidación 6 meses","Aforo: 5 años","Incremento del 30 % cuando faltan sanciones (art. 701)"]},
+{id:"r-camb",g:"g-cambiario",t:"Régimen cambiario",prio:4,
+ foco:"Cuatro normas: Resolución Externa 1 de 2018, Circular DCIN-83, Resolución 180 de 2012 y Decreto Ley 2245 de 2011. Salen casos de infracción y sanción.",
+ b:[
+ ["Qué se canaliza (R. Ext. 1, art. 41)","Importaciones y exportaciones de bienes, endeudamiento externo y sus costos, inversión extranjera en Colombia y colombiana en el exterior y sus rendimientos, inversiones financieras en el exterior, avales y garantías en moneda extranjera y derivados. Se canalizan por el mercado cambiario (IMC) o por cuentas de compensación."],
+ ["Mercado cambiario y TRM","Mercado cambiario son las divisas canalizadas por IMC o cuentas de compensación, más las canalizadas voluntariamente (art. 36). La TRM es el promedio ponderado de compras y ventas de dólares de contado entre IMC, certificada por la Superfinanciera (art. 40). Cuentas de compensación: se registran en el Banco de la República a más tardar dentro del mes siguiente a la primera operación (art. 37)."],
+ ["Declaración de cambio (DCIN-83)","Son los datos mínimos de la operación, suministrados al IMC y transmitidos electrónicamente. Se puede modificar, cambiar o corregir en cualquier tiempo, salvo datos fijos (NIT del IMC, fecha, número, valor, ingreso o egreso). La devolución es tipo de operación 2 con el mismo numeral. Profesionales de cambio usan Formulario 18; cuentas de compensación, Formulario 10. En frontera: desde USD 500 formulario completo, entre 200 y 500 simplificado, hasta 200 sin declaración."],
+ ["Informes a la DIAN (Res. 180)","Reportan los IMC, titulares de cuentas de compensación y concesionarios de correos con servicios financieros. Es trimestral, dentro del mes siguiente, según el último dígito del NIT. La legalización tardía se hace dentro del mes siguiente al levante en importaciones. Incumplir lleva a la sanción del art. 3 del D. Ley 2245."],
+ ["Procedimiento sancionatorio (D. Ley 2245)","Responsabilidad objetiva (art. 32). Formulación de cargos hasta 5 años desde los hechos (art. 5). Traslado para descargos: 2 meses (art. 21). Sanción dentro de los 2 años siguientes al vencimiento del traslado. Reducción de la sanción: 40 % antes de la visita, 60 % durante el traslado de cargos y 75 % en el plazo del recurso (art. 23). Reconsideración: 1 mes para interponerla (art. 26) y 7 meses para resolver (art. 28), con silencio positivo (art. 30)."],
+ ["Cuantías","Mínimos: 200 UVT para los numerales 2 a 5 y 7 a 10, y 25 UVT para los demás. Reincidencia en 5 años aumenta un tercio. Incumplir el informe: numeral 30, 200 UVT por periodo; numeral 31, 25 UVT por mes de retraso, máximo 200."],
+ ["Soportes","Se conservan por el término de caducidad de la acción sancionatoria (R. Ext. 1, art. 90)."]],
+ t2:["La obligación sustancial es canalizar; informar y conservar son obligaciones formales.","Caducidad: 5 años para formular cargos; no la mezcles con 2 años para sancionar.","Silencio en reconsideración es positivo (a favor)."],
+ m:["5 años cargos · 2 meses descargos · 2 años sanción","40 / 60 / 75 % de reducción","1 mes recurso · 7 meses para resolver","200 UVT y 25 UVT como mínimos"]},
+{id:"r-estr",g:"g-estructura",t:"Estructura y funciones de la DIAN",prio:4,
+ foco:"La guía la cuenta entre los 5 temas más importantes. Preguntan naturaleza jurídica, funciones y cómo se organiza la entidad.",
+ b:[
+ ["Qué es","La DIAN es una unidad administrativa especial del orden nacional, adscrita al Ministerio de Hacienda, con personería jurídica, autonomía administrativa y presupuestal (Decreto 1742 de 2020; confirma el texto en la app)."],
+ ["Qué hace","Administra los impuestos nacionales, los derechos de aduana y el comercio exterior, y ejerce control cambiario en su competencia: recaudo, fiscalización, determinación, discusión, cobro y servicio."],
+ ["Cómo se organiza","Dirección General, direcciones de gestión (ingresos, fiscalización, jurídica, policía fiscal y aduanera, organizacional, innovación y tecnología) y direcciones seccionales. Verifica la lista exacta en el decreto."],
+ ["Personal","Sistema específico de carrera administrativa (Decreto Ley 071 de 2020)."]],
+ t2:["No mezcles funciones de las direcciones de gestión; lee la estructura del documento cargado."],
+ m:["Decreto 1742 de 2020: estructura","Decreto Ley 071 de 2020: carrera"]},
+{id:"r-laft",g:"g-laft",t:"Lavado de activos y financiación del terrorismo",prio:3,
+ foco:"ABC del LA/FT de la UIAF, Evaluación Nacional de Riesgo y CONPES 3793 de 2013.",
+ b:[
+ ["Conceptos","Lavado de activos: dar apariencia de legalidad a recursos de origen ilícito. Financiación del terrorismo: el origen puede ser lícito, lo ilícito es el destino."],
+ ["Etapas del lavado","Colocación (ingresar el dinero al sistema), estratificación o diversificación (moverlo para ocultar el origen) e integración (reintroducirlo como legal)."],
+ ["Señales de alerta y ROS","La UIAF recibe los reportes de operaciones sospechosas (ROS). El ROS no es una denuncia y quien lo reporta de buena fe no tiene responsabilidad por hacerlo."],
+ ["Rol de la DIAN","Delitos fuente cercanos: contrabando, fraude aduanero y evasión. La DIAN detecta y reporta a la UIAF."],
+ ["CONPES 3793 de 2013","Política nacional contra el lavado de activos y la financiación del terrorismo."]],
+ t2:["Esta sección combina el texto de la guía con conocimiento general: verifica en los documentos oficiales que tengas."],
+ m:["3 etapas: colocación, estratificación, integración","ROS ante la UIAF"]},
+{id:"r-int",g:"g-internacional",t:"Fiscalización internacional",prio:3,
+ foco:"Precios de transferencia (ET 260-1 a 260-11), directrices OCDE, intercambio automático (CRS) y convenios de doble imposición.",
+ b:[
+ ["Vinculación (art. 260-1)","Hay vinculación por subordinación, control o criterios similares entre partes."],
+ ["Precios de transferencia (260-2)","Quien celebre operaciones con vinculados del exterior debe determinar ingresos, costos, deducciones, activos y pasivos con el principio de plena competencia."],
+ ["Métodos (260-3)","Precio comparable no controlado, precio de reventa, costo adicionado, partición de utilidades, residual de partición de utilidades y márgenes transaccionales de utilidad de operación."],
+ ["Documentación (260-5)","Obligan quienes tengan patrimonio bruto de 100.000 UVT o más, o ingresos brutos de 61.000 UVT o más, y operaciones con vinculados: informe maestro e informe local. Declaración informativa: art. 260-9. Acuerdos anticipados de precios: art. 260-10. Sanciones: art. 260-11."],
+ ["CRS y convenios","El estándar CRS organiza el intercambio automático de información de cuentas financieras. Los convenios de doble imposición incluyen la cláusula PPT (prueba del propósito principal) de la Acción 6 de BEPS."]],
+ t2:["Distingue patrimonio (100.000 UVT) de ingresos (61.000 UVT)."],
+ m:["Plena competencia","6 métodos","100.000 UVT patrimonio · 61.000 UVT ingresos"]},
+{id:"r-cpaca",g:"g-cpaca",t:"CPACA (Ley 1437 de 2011)",prio:4,
+ foco:"Principios (art. 3), derechos y deberes, conflictos de interés, procedimiento sancionatorio, notificaciones, recursos, silencio, firmeza, revocatoria y medios de control.",
+ b:[
+ ["Principios (art. 3)","Debido proceso, igualdad, imparcialidad, buena fe, moralidad, participación, responsabilidad, transparencia, publicidad, coordinación, eficacia, economía y celeridad."],
+ ["Recursos","Reposición y apelación se interponen en 10 días; queja en 5 días. Reposición ante quien decidió, apelación ante el superior, queja cuando se rechaza la apelación."],
+ ["Notificaciones","Personal, por aviso, electrónica y en estrados. La notificación personal se cita primero; si no comparece, se notifica por aviso."],
+ ["Silencio","Silencio negativo: a los 3 meses sin respuesta a una petición. Silencio positivo solo cuando la ley lo dice."],
+ ["Firmeza y pérdida de ejecutoria","Firme cuando no hay recursos, se vencen los términos o se renuncia. Pierde fuerza ejecutoria por suspensión provisional, desaparición de fundamentos, 5 años sin ejecutarse, cumplimiento de condición resolutoria o pérdida de vigencia."],
+ ["Revocatoria directa","Procede por oposición a la Constitución o la ley, por ir contra el interés público o por agravio injustificado a una persona."],
+ ["Medios de control","Nulidad (simple) y nulidad y restablecimiento del derecho; caducidad de 4 meses para este último."],
+ ["Sancionatorio","Formulación de cargos, descargos en 15 días, práctica de pruebas y decisión; la facultad sancionatoria caduca a los 3 años."]],
+ t2:["Esta sección es conocimiento general del CPACA; confirma plazos en el texto de la guía antes del examen."],
+ m:["10 días recursos · 5 días queja","3 meses silencio negativo","4 meses nulidad y restablecimiento","3 años caducidad sancionatoria"]},
+{id:"r-pet",g:"g-peticion",t:"Derecho de petición (Ley 1755 de 2015)",prio:4,
+ foco:"Términos: 15, 10 y 30 días; peticiones incompletas y desistimiento; reserva e insistencia.",
+ b:[
+ ["Términos","Regla general: 15 días hábiles. Documentos e información: 10 días. Consultas a autoridades: 30 días. Si no se puede responder en el plazo, se informa antes de que venza y se señala nueva fecha razonable."],
+ ["Incompletas","La autoridad requiere al peticionario en los 10 días siguientes para que complete en un mes; si no lo hace, se entiende desistida."],
+ ["Falta de competencia","Se informa al interesado y se traslada la petición dentro de los 5 días siguientes."],
+ ["Reserva","Quien niega por reserva debe motivarlo; el peticionario puede insistir y el tribunal decide en el plazo legal."]],
+ t2:["Contenido tomado de conocimiento general de la Ley 1755; lee el artículo en la app para precisar plazos de insistencia."],
+ m:["15 · 10 · 30 días","1 mes para completar → desistimiento"]},
+{id:"r-const",g:"g-constitucion",t:"Constitución Política",prio:3,
+ foco:"Títulos I y II y estructura del Estado.",
+ b:[
+ ["Título I (arts. 1 a 10)","Colombia es Estado social de derecho, república unitaria, descentralizada, con autonomía de sus entidades territoriales, democrática, participativa y pluralista, fundada en la dignidad humana, el trabajo, la solidaridad y la prevalencia del interés general."],
+ ["Título II","Derechos fundamentales (11 a 41), sociales y económicos (42 a 77), colectivos (78 a 82), mecanismos de protección (83 a 94) y deberes (95)."],
+ ["Estado","Ramas legislativa, ejecutiva y judicial, y órganos autónomos."]],
+ t2:["Ten presente los mecanismos de protección: tutela, cumplimiento, populares y de grupo."],
+ m:["Arts. 1 a 10 principios","Art. 95 deberes"]},
+{id:"r-trans",g:"g-transparencia",t:"Ley de Transparencia (Ley 1712 de 2014)",prio:3,
+ foco:"Máxima publicidad, clases de información, excepciones (arts. 18 y 19), publicación mínima y respuesta.",
+ b:[
+ ["Clases","Información pública, clasificada (daño a derechos de personas, art. 18) y reservada (daño a intereses públicos, art. 19)."],
+ ["Principio","Máxima publicidad: toda información es pública salvo excepción legal."],
+ ["Duración de la reserva","La reserva dura como máximo 15 años (art. 22)."]],
+ t2:["Clasificada protege personas; reservada protege intereses públicos."],
+ m:["Art. 18 clasificada · art. 19 reservada","15 años de reserva"]},
+{id:"r-mipg",g:"g-mipg",t:"MIPG (Decreto 1499 de 2017)",prio:3,
+ foco:"7 dimensiones, políticas, líneas de defensa y FURAG.",
+ b:[
+ ["Las 7 dimensiones","Talento humano; direccionamiento estratégico y planeación; gestión con valores para resultados; evaluación de resultados; información y comunicación; gestión del conocimiento y la innovación; control interno."],
+ ["Líneas de defensa","Línea estratégica (alta dirección y comité), primera línea (líderes de proceso), segunda línea (planeación, supervisores) y tercera línea (control interno)."],
+ ["FURAG","Formulario Único de Reporte y Avance de Gestión: mide el desempeño institucional."]],
+ t2:["La tercera línea es control interno; la primera la ejecuta."],
+ m:["7 dimensiones","4 niveles de la estructura de defensa"]},
+{id:"r-doc",g:"g-gestion-documental",t:"Gestión documental",prio:3,
+ foco:"Ley 594 de 2000, Acuerdo 001 de 2024 del AGN e instrumentos archivísticos.",
+ b:[
+ ["Ciclo vital","Archivo de gestión, archivo central y archivo histórico."],
+ ["Instrumentos","CCD (cuadro de clasificación), TRD (retención), TVD (valoración, fondos acumulados), PGD (programa de gestión documental), PINAR (plan institucional de archivos) y FUID (inventario)."],
+ ["Principios","Procedencia y orden original."]],
+ t2:["TRD define cuánto tiempo y qué destino; TVD aplica a documentos acumulados."],
+ m:["TRD · TVD · CCD · PGD · PINAR · FUID"]},
+{id:"r-serv",g:"g-servicio",t:"Servicio al ciudadano",prio:3,
+ foco:"Casos situacionales: ciudadano molesto, persona sorda, persona ciega, adulto mayor y hablante de lengua indígena.",
+ b:[
+ ["Principio","Atender con respeto, empatía, claridad y sin discriminar, usando lenguaje claro."],
+ ["Ciudadano molesto","Escuchar sin interrumpir, no tomarlo personal, reconocer el problema y ofrecer una solución o ruta."],
+ ["Persona sorda","Mirarla de frente, hablar con claridad sin gritar, usar apoyos escritos o intérprete."],
+ ["Persona ciega","Presentarte, describir el entorno, ofrecer el brazo si lo pide y leerle la información."],
+ ["Adulto mayor","Paciencia, ritmo pausado, atención prioritaria."],
+ ["Lengua indígena","Buscar intérprete o apoyo, hablar despacio, comprobar que entendió."]],
+ t2:["Resumen basado en las buenas prácticas del protocolo; ajusta con el texto del protocolo de la guía."],
+ m:["Respeto, claridad, inclusión"]},
+{id:"r-ofi",g:"g-ofimatica",t:"Ofimática",prio:2,
+ foco:"Excel, Outlook, Word y PowerPoint.",
+ b:[
+ ["Excel","Referencia absoluta con $ (F4). BUSCARV busca en la primera columna; usa coincidencia exacta con FALSO o 0. SUMAR.SI suma según criterio; CONTAR.SI cuenta según criterio. Las tablas dinámicas resumen datos."],
+ ["Outlook","CCO oculta destinatarios; CC los muestra. Las reglas organizan el correo automáticamente."],
+ ["Word","Estilos para dar formato, tabla de contenido automática, combinar correspondencia y control de cambios."],
+ ["PowerPoint","El patrón de diapositivas aplica cambios a todas; transiciones son entre diapositivas y animaciones son de objetos."]],
+ t2:["Pregunta típica: diferencia CC y CCO; transición frente a animación."],
+ m:["$ fija celda","CCO oculta"]},
+{id:"r-est2",g:"g-estadistica",t:"Estadística básica",prio:2,
+ foco:"Variables, frecuencias, tendencia central, dispersión, cuartiles y probabilidad.",
+ b:[
+ ["Variables","Cualitativas (nominal u ordinal) y cuantitativas (discreta o continua)."],
+ ["Tendencia central","Media (promedio), mediana (valor central) y moda (más frecuente). Los valores extremos afectan la media, no la mediana."],
+ ["Dispersión","Rango (máximo menos mínimo), varianza y desviación estándar (raíz cuadrada de la varianza)."],
+ ["Cuartiles","Q1 es el 25 %, Q2 la mediana (50 %) y Q3 el 75 %."],
+ ["Probabilidad","Casos favorables sobre casos posibles."]],
+ t2:["Desviación estándar = raíz de la varianza."],
+ m:["Q1 25 % · Q2 50 % · Q3 75 %"]},
+{id:"r-inf",g:"g-informes",t:"Informes técnicos y ejecutivos",prio:2,
+ foco:"Resumen ejecutivo, informe ejecutivo frente a técnico, redacción de informes y actas.",
+ b:[
+ ["Resumen ejecutivo","Breve, claro, para quien decide: objetivo, hallazgos principales, conclusiones y recomendaciones."],
+ ["Informe técnico","Más detalle: metodología, datos, análisis y anexos."],
+ ["Acta","Fecha, lugar, asistentes, orden del día, desarrollo, compromisos con responsable y fecha, y firmas."]],
+ t2:["El ejecutivo es corto y orientado a decisión; el técnico es detallado."],
+ m:["Ejecutivo = decisión · Técnico = detalle"]},
+{id:"r-comp",g:"g-competencias",t:"Competencias comportamentales",prio:2,
+ foco:"Prueba de juicio situacional. Elige la respuesta que muestre la conducta del nivel exigido.",
+ b:[
+ ["Niveles que te aplican","Comportamiento ético (nivel 4), trabajo en equipo (nivel 3), adaptabilidad (nivel 2) y comunicación efectiva (nivel 2), además de las competencias básicas."],
+ ["Cómo responder","Elige la opción más constructiva, respetuosa de las reglas, orientada al equipo y a la entidad. Evita las que eluden responsabilidad o rompen reglas."]],
+ t2:["Son clasificatorias, no eliminatorias."],
+ m:["Respuesta ética, colaborativa y dentro de las normas"]},
+{id:"r-integ",g:"g-integridad",t:"Prueba de integridad",prio:2,
+ foco:"Los 5 valores y los casos: dádivas, conflictos de interés, trato al ciudadano y recursos públicos.",
+ b:[
+ ["Valores","Honestidad, respeto, compromiso, diligencia y justicia."],
+ ["Casos","Rechazar dádivas, declarar conflictos de interés, tratar a todos por igual y usar los recursos públicos solo para fines institucionales."]],
+ t2:["Ante la duda, la opción que cumple la regla y se informa a tiempo."],
+ m:["5 valores: honestidad, respeto, compromiso, diligencia, justicia"]}
+];
+/* ===== REPASO PROFUNDO: temas adicionales y cuadro maestro de plazos ===== */
+RP.push(
+{id:"r-plazos",g:"g-procedimiento",t:"Cuadro maestro de plazos, cifras y porcentajes",prio:5,
+ foco:"Es lo que más se pregunta en opción múltiple: el examen cambia 3 por 5, 2 por 3 o días hábiles por calendario. Memoriza este cuadro completo.",
+ b:[
+ ["Estatuto Tributario: firmeza y determinación","Firmeza: 3 años (714). Corrección que aumenta el impuesto: 3 años (588). Corrección que lo disminuye: 1 año (589). Emplazamiento para corregir: 1 mes (685). Notificar el requerimiento especial: 3 años (705). Respuesta al requerimiento: 3 meses (707). Ampliación del requerimiento: dentro de 3 meses, por una sola vez (708). Liquidación de revisión: 6 meses después de la respuesta (710). Corrección aritmética: 2 años desde la presentación (699). Aforo: 5 años (717)."],
+ ["Estatuto Tributario: discusión y cobro","Reconsideración: 2 meses (720). La DIAN resuelve en 1 año (732) con silencio a favor del recurrente (734). Auto inadmisorio: 1 mes (726); reposición contra él: 5 días (728). Revocatoria directa: 2 años desde la ejecutoria (737). Mandamiento de pago: citación para comparecer en 10 días (826). Pagar o proponer excepciones: 15 días (830). Solicitar devolución: 2 años (854). Devolver renta e IVA: 50 días (855). Auto inadmisorio de devolución: 15 días (858). Conservar documentos: 5 años desde el 1 de enero siguiente (632). Recursos de reconsideración: menos de 750 UVT los falla quien profirió el acto (560)."],
+ ["Estatuto Tributario: sanciones","Mínima 10 UVT (639). Extemporaneidad 5 % mensual con tope 100 % (641); con emplazamiento 10 % mensual con tope 200 % (642). No declarar renta 20 %, IVA 10 %, retenciones 10 % o 100 % (643). Corrección 10 % o 20 % (644). Aritmética 30 % (646). Inexactitud 160 % o 200 % (647 y 648). Información hasta 7.500 UVT (651). Factura sin requisitos 1 % hasta 950 UVT (652). Contabilidad 0,5 % hasta 20.000 UVT (655). Clausura 3 días (657). Gastos no explicados 100 % (663). Incremento por sanciones omitidas en corrección aritmética: 30 % (701)."],
+ ["Aduanero: aprehensión y decomiso (D. 1165)","Objeción a la aprehensión: 15 días hábiles (664). Periodo probatorio: 10 días hábiles (665). Decisión de fondo del decomiso ordinario: 45 días hábiles (666). Reconocimiento y avalúo especializado: 20 días hábiles (663). Garantía en reemplazo: 100 % del FOB (662). Decomiso directo desde 500 UVT hacia abajo y mercancías tasadas (667). Cierre del establecimiento: mercancía de más de 500 UVT, 3 días calendario (672). Mercancía no aprehendida: 200 % o 150 % (648)."],
+ ["Aduanero: sanciones y liquidaciones oficiales","Requerimiento especial aduanero: a más tardar 30 días después de establecida la infracción o inexactitud (681). Respuesta: 15 días hábiles, ampliable sin pasar de 45 (684). Pruebas: 10 días hábiles (685); reposición contra la negación: 5 días hábiles. Decisión de fondo: 45 días (686). Pago tras la ejecutoria: 10 días hábiles (689). Reconsideración: 15 días hábiles para interponer (699) y 4 meses para resolver (705). Vencido el plazo, silencio administrativo positivo (707). Levante tras requerimiento: corregir y pagar en 5 días (186). Resolución anticipada: 2 meses (300)."],
+ ["Aduanero: sanciones (régimen del D. 1165)","Allanamiento 20 %, 40 % y 60 % (610). Reducción por información o finalización extemporánea: 80 % del valor (609). Reincidencia en 5 años: +20 % hasta 100 % (607). Caducidad: 3 años (611). Prescripción: 5 años desde la ejecutoria (612). Rescate de mercancía en abandono: 10 % del valor en aduana más gastos de almacenamiento (293)."],
+ ["Cambiario","Cargos hasta 5 años desde los hechos; descargos 2 meses; sanción dentro de 2 años; recurso 1 mes; resolver 7 meses con silencio positivo. Reducción 40 %, 60 % y 75 %. Mínimos 200 UVT y 25 UVT; reincidencia +1/3. Informe trimestral dentro del mes siguiente. Cuenta de compensación: registro en el mes siguiente a la primera operación."],
+ ["Ley 2586 de 2026","Gestión persuasiva: 1 mes. Requerimiento de información: 15 días hábiles prorrogables una vez. Inmovilización: 5 + 5 días hábiles. Retención temporal: 5 + 5. Custodia: 5 + 5."],
+ ["Básicas","Petición: 15, 10 y 30 días. Recursos del CPACA: reposición y apelación 10 días, queja 5. Silencio negativo 3 meses. Nulidad y restablecimiento: 4 meses. Caducidad sancionatoria: 3 años. Reserva de información: máximo 15 años."]],
+ t2:["Distingue días hábiles de calendario: el aduanero usa sobre todo hábiles; el Estatuto usa meses, años y días calendario.","El requerimiento especial tributario se notifica en 3 años; el aduanero, en 30 días desde que se establece la infracción.","La reconsideración tributaria son 2 meses; la aduanera, 15 días hábiles."],
+ m:["Tributario: 3 años · 3 meses · 6 meses · 2 meses · 1 año","Aduanero: 15 · 10 · 45 días hábiles; 4 meses reconsideración","Cambiario: 5 años · 2 meses · 2 años · 1 mes · 7 meses"]},
+{id:"r-adu2",g:"g-aduanero",t:"Aduanero · procedimientos paso a paso (decomiso, requerimiento especial, liquidación oficial, recurso)",prio:5,
+ foco:"Los casos del banco de preguntas giran aquí: quién actúa, en qué orden, en cuántos días y con qué recurso.",
+ b:[
+ ["Marco (arts. 649 a 652)","El título 16 regula el decomiso, la cancelación del levante, la determinación de sanciones, las liquidaciones oficiales de revisión y corrección y la efectividad de garantías. Solo los abogados pueden ser agentes oficiosos para interponer recursos. Las correcciones de la actuación se rigen por el CPACA (art. 41) y el Código General del Proceso."],
+ ["Pruebas (arts. 653 a 658)","Principios: necesidad de la prueba, publicidad, eficacia, contradicción y sana crítica. La decisión se funda en hechos probados en el expediente. Medios: documentos propios del comercio exterior, los del decreto, acuerdos comerciales y, en lo pertinente, el Código General del Proceso. Quien invoca una norma debe probar sus supuestos de hecho. Las pruebas se piden solo en: la aprehensión, la objeción, la respuesta al requerimiento especial o el recurso de reconsideración, o de oficio. Se valoran en conjunto con sana crítica. La DIAN puede ordenar inspección administrativa."],
+ ["Decomiso ordinario","1) Acta de aprehensión (660), con causal, descripción y titulares; suspende el levante (661). 2) Reconocimiento y avalúo en la misma diligencia, o en 20 días hábiles si se requiere análisis especializado, con avalúo provisional (663). 3) Objeción en 15 días hábiles con pruebas (664). 4) Periodo probatorio: 10 días hábiles para decidir si hay corrección de la causal o decretar pruebas; el auto se notifica por estado y contra la negativa procede reposición en 10 días hábiles (665). 5) Resolución motivada de fondo en 45 días hábiles (666)."],
+ ["Decomiso directo (667 y 668)","Se hace en la misma diligencia de aprehensión. Procede por valor igual o inferior a 500 UVT, hidrocarburos, licores, tabaco, perfumes, animales vivos, prohibida importación, devolución por convenios, alto riesgo sanitario y otros tasados. El interesado aporta ahí mismo los documentos de legal importación. El acta es decisión de fondo y solo cabe reconsideración. Si se advierte que debía ser ordinario, se retrotrae (669)."],
+ ["Reglas comunes","La mercancía se devuelve si se desvirtúa la causal o se rescata, antes de quedar en firme el decomiso (670). Puede quedar en custodia del titular en casos tasados, como maquinaria o bajo entidades de derecho público (671). Cierre de establecimiento por 3 días calendario si el decomiso supera 500 UVT en inventarios; con dos decomisos en 2 años al mismo responsable, el cierre es mayor (672)."],
+ ["Liquidación oficial (673 a 678)","Es el acto que modifica la declaración de importación (o de exportación con tributos) para corregir inexactitudes, y la reemplaza. De corrección: tarifa, tasa de cambio, rescate, sanciones, intereses, error aritmético, preferencias y régimen o destino (675). De revisión: una sola vez, por inexactitudes como clasificación arancelaria, valor FOB, origen, fletes, seguros, otros gastos y ajustes (678). La liquidación se limita a lo contemplado en el requerimiento especial (674)."],
+ ["Requerimiento especial aduanero (679 a 689)","Inicia formalmente el proceso (680). Se expide a más tardar 30 días después de establecida la infracción o inexactitud (681). Se vincula a terceros como el agente de aduanas y el garante (682, 683). Se notifica personalmente o por correo (684). El interesado responde en 15 días hábiles con objeciones y pruebas, sin presentación personal; ampliable hasta 45 días hábiles si debe acreditar restricciones. Luego 10 días hábiles para decretar pruebas (685) y 45 días para decidir de fondo (686). El proceso termina antes si se acepta el allanamiento o hay prueba de improcedencia (parágrafo 686). Pago en 10 días hábiles tras la ejecutoria (689)."],
+ ["Garantías (692 a 696)","Se hacen efectivas por resolución. Si la garantía está ligada a un proceso, se ordena en el mismo acto de fondo (695). La de pleno derecho del transportador sigue las Decisiones andinas 617, 636 y 837 (696)."],
+ ["Recurso de reconsideración (699 a 709)","Procede contra liquidaciones oficiales, decomisos y sanciones; 15 días hábiles para interponerlo (699). Se entrega en la seccional que lo resuelve (700). Requisitos: escrito con motivos, oportunidad, interposición por el destinatario o apoderado (702). Inadmisión en 10 días hábiles (703). Pruebas dentro del mes siguiente (704). Decisión en 4 meses, suspendido durante el periodo probatorio (705). La decisión agota la vía administrativa y contra ella no hay recurso; revocar un decomiso deja en firme el levante (706). Vencidos los plazos hay silencio administrativo positivo (707): si era sancionatorio, se absuelve. Revocatoria directa por el CPACA (708). Firmeza cuando no procede recurso, vence el término, se renuncia, se acepta el desistimiento o se decide el recurso (709)."],
+ ["Cancelar el levante (650)","Si en control posterior se detecta una causal de aprehensión en mercancía con levante, se comunica al importador, se le pide demostrar la legal introducción y, si no lo hace, debe poner la mercancía a disposición."]],
+ t2:["El decomiso directo no tiene objeción ni periodo probatorio separado: todo ocurre en la diligencia.","Contra el decomiso directo solo cabe reconsideración, no reposición ni apelación.","El silencio administrativo aduanero es positivo; en sancionatorio, se absuelve.","Sanción por no aprehender: exige haber cancelado antes el levante (650)."],
+ m:["Ordinario: 15 días objeción → 10 días pruebas → 45 días decisión","REA: 30 días para expedirlo, 15 días hábiles para responder, 45 para decidir","Reconsideración: 15 días hábiles / 4 meses","Liquidación de revisión: una sola vez"]},
+{id:"r-adu3",g:"g-aduanero",t:"Aduanero · importación, legalización, rescate y valor en aduana",prio:5,
+ foco:"Declaración de importación, corrección, legalización, mercancía no presentada o no declarada, rescate y valoración.",
+ b:[
+ ["Declaraciones (arts. 289 a 297)","Se presentan y aceptan por los servicios informáticos electrónicos de la seccional donde está la mercancía. Hay declaración de legalización, de corrección y modificación."],
+ ["Legalización (290 y 291)","Permite declarar mercancía que incumplió una obligación y daba lugar a aprehensión, voluntariamente o provocada por la autoridad. Exige cumplir requisitos y pagar tributos y rescate cuando proceda."],
+ ["Rescate (293)","Mercancía en abandono legal: se rescata con declaración de legalización pagando tributos, el 10 % del valor en aduana y los gastos de almacenamiento, dentro del plazo legal. Algunas entidades públicas, organismos internacionales y misiones diplomáticas tienen tratamiento especial."],
+ ["Mercancía no presentada (294)","Ingreso por lugar no habilitado (salvo arribo forzoso legítimo del Código de Comercio), manifiesto de carga no entregado antes del aviso de llegada, entre otros casos."],
+ ["Mercancía no declarada (295)","Sin planilla, factura de nacionalización, declaración de importación o de ingreso; errores en serial, marca o descripción que no la hagan diferente; cantidad superior a la declarada; descripción que implique mercancía diferente."],
+ ["Corrección (296) y modificación (297)","La corrección voluntaria subsana subpartida, tarifas, tasa de cambio, sanciones, operación aritmética, modalidad, preferencias, valor FOB, fletes, seguros, otros gastos, ajustes y valor en aduana; procede una sola vez dentro del término del art. 188. La provocada por la autoridad procede tras inspección o requerimiento especial. La modificación no genera sanción en los casos permitidos."],
+ ["Resolución anticipada (298 a 300)","La autoridad la expide antes de la importación, a solicitud de importadores, exportadores o productores legitimados, dentro de 2 meses desde la radicación si la documentación está completa."],
+ ["Valor en aduana (320 a 338)","Se rige por el Acuerdo de Valoración de la OMC, la Decisión 571 de la CAN y la Resolución 1684 de 2014. El obligado a declarar el valor es el comprador o importador; si es persona jurídica, lo firma el representante legal designado (328). Se usa la Declaración Andina del Valor. Se pueden autorizar ajustes de valor permanente (331). Hay banco de datos de valoración (333). Mercancías elaboradas en zona franca: el valor cubre solo materias primas e insumos extranjeros (334). Hay que conservar la DAV y los soportes (335), aceptar descuentos y comisiones conforme al reglamento comunitario (336, 337) y se puede declarar valor provisional si el precio no está definido o faltan importes (338)."],
+ ["Métodos de valoración (conocimiento general)","Se aplican en orden: valor de transacción; valor de mercancías idénticas; de similares; método deductivo; método del valor reconstruido; y último recurso. Verifica el orden en el texto de la guía."],
+ ["Levante (185 y 339)","Procede si los servicios informáticos lo determinan o la inspección documental o física muestra conformidad; con garantías, la declaración pasa a la dependencia de valor en control posterior."]],
+ t2:["Mercancía no presentada es un problema de ingreso; no declarada, de declaración.","La corrección voluntaria procede una vez; la liquidación de revisión también una vez.","Quien declara el valor es el importador, no la agencia."],
+ m:["Rescate: 10 % del valor en aduana","DAV: la firma el importador","Resolución anticipada: 2 meses"]},
+{id:"r-proc2",g:"g-procedimiento",t:"Procedimiento tributario · deberes formales, declaraciones, factura, RUT y conservación",prio:5,
+ foco:"Arts. 571 a 633: quién cumple los deberes formales, qué declaraciones existen, cuándo son ineficaces, facturación e información.",
+ b:[
+ ["Quién cumple (571 a 573)","Contribuyentes o responsables directos, personalmente o por representantes; a falta de ellos, el administrador del patrimonio. Representantes: padres por hijos menores, tutores y curadores, gerentes, entre otros; responden subsidiariamente si omiten."],
+ ["NIT y RUT (555-1 y 555-2)","El NIT identifica a contribuyentes, responsables, agentes retenedores y declarantes. Las cámaras de comercio piden el NIT en los 2 días calendario siguientes a asignar la matrícula. El RUT es el mecanismo único para identificar, ubicar y clasificar a contribuyentes, responsables, retenedores, importadores, exportadores y demás usuarios aduaneros; sustituyó el Registro Nacional de Vendedores y el de exportadores."],
+ ["Clases de declaraciones (574)","Renta anual (o monotributo), IVA (bimestral para los responsables), retención en la fuente mensual, ingresos y patrimonio, timbre, activos en el exterior y otras."],
+ ["Presentación (579 y 579-2)","En los lugares y plazos que fije el Gobierno. Quienes estén obligados a presentar por medios electrónicos y lo hagan por otro medio, se tienen por no presentados."],
+ ["Declaración no presentada (580)","No se presentó en el lugar señalado, sin identificación o con identificación equivocada del declarante, sin los factores para identificar las bases gravables, o sin la firma de quien debe declarar o del contador o revisor fiscal obligado."],
+ ["Retención sin pago (580-1)","La declaración de retención en la fuente presentada sin pago total no produce efecto legal sin necesidad de acto que lo declare, salvo si el agente retenedor tiene un saldo a favor suficiente."],
+ ["Firma del contador (581)","No impide la fiscalización; la firma da fe de que los libros están conforme a las normas y reflejan la situación financiera."],
+ ["Reserva (583 a 586)","La declaración tiene reserva: solo puede examinarse con autorización del declarante o en los casos que la ley permita; las entidades que reciben información están obligadas a guardar la reserva."],
+ ["Obligados a declarar renta (591 a 594)","Todos los contribuyentes salvo los no obligados (592); asalariados no obligados (593); el certificado de ingresos y retenciones reemplaza la declaración en casos tasados (594)."],
+ ["Contenido de las declaraciones (596, 599, 602, 606)","Formulario diligenciado, identificación y ubicación, factores para determinar las bases, liquidación privada, liquidación de sanciones cuando proceda y firmas."],
+ ["Factura (615 y 617)","Todos los comerciantes, profesionales liberales y quienes enajenen productos agrícolas o ganaderos deben expedir factura o documento equivalente y conservar copia, sean o no contribuyentes. Requisitos del art. 617: denominación de factura de venta, nombre y NIT del vendedor y del adquirente con IVA discriminado, numeración consecutiva, fecha, descripción de bienes o servicios y valor total, entre otros."],
+ ["Información (631) y conservación (632)","El Director puede pedir información para estudios y cruces. Los documentos, informaciones y pruebas, incluidos libros y comprobantes, se conservan 5 años contados desde el 1 de enero del año siguiente a su elaboración, expedición o recibo."]],
+ t2:["Declaración que se tiene por no presentada no produce efectos: no es lo mismo que declaración ineficaz.","Firma del contador: no libera a la DIAN de fiscalizar.","La conservación son 5 años contados desde el 1 de enero siguiente."],
+ m:["NIT y RUT: RUT sustituye RNV y registro de exportadores","Conservar: 5 años","Factura: obligatoria a comerciantes, profesionales y productores agrícolas"]}
+);
+/* fusionar las preguntas de plazos en las tarjetas */
+const PLAZOS_FLASH=[
+ ["Firmeza de la declaración (ET 714)","3 años desde el vencimiento del plazo para declarar si no se notificó requerimiento especial."],
+ ["Requerimiento especial: notificación y respuesta (ET 705 y 707)","Se notifica en 3 años; se responde en 3 meses."],
+ ["Liquidación de revisión (ET 710)","6 meses después del vencimiento del plazo de respuesta al requerimiento."],
+ ["Aforo (ET 717)","5 años desde el vencimiento del plazo para declarar, con emplazamiento previo."],
+ ["Corrección aritmética (ET 699)","2 años desde la presentación de la declaración."],
+ ["Reconsideración tributaria (ET 720, 732)","2 meses para interponerla; la DIAN tiene 1 año para resolver; silencio a favor del recurrente."],
+ ["Cobro coactivo (ET 826, 830)","Comparecer 10 días; pagar o excepcionar 15 días."],
+ ["Devolución (ET 854, 855, 858)","Solicitar en 2 años; devolver en 50 días; inadmisorio en 15 días."],
+ ["Inexactitud (ET 647, 648)","160 % de la diferencia; 200 % si omite activos o incluye pasivos inexistentes."],
+ ["Extemporaneidad (ET 641, 642)","5 % mensual, tope 100 %; con emplazamiento 10 % mensual, tope 200 %."],
+ ["Objeción a la aprehensión (D. 1165 664)","15 días hábiles."],
+ ["Decomiso ordinario (D. 1165 665, 666)","10 días hábiles de periodo probatorio; 45 días hábiles para decidir de fondo."],
+ ["Requerimiento especial aduanero (D. 1165 681, 684)","Expedirlo en 30 días; responderlo en 15 días hábiles (hasta 45 si se amplía)."],
+ ["Reconsideración aduanera (D. 1165 699, 705)","15 días hábiles para interponerla y 4 meses para decidir; silencio positivo."],
+ ["Allanamiento aduanero (D. 1165 610)","20 % antes del requerimiento, 40 % hasta la decisión de fondo, 60 % en el término del recurso."],
+ ["Caducidad y prescripción aduaneras (D. 1165 611, 612)","Caducidad 3 años; prescripción de la sanción 5 años."],
+ ["Rescate (D. 1165 293)","10 % del valor en aduana más almacenamiento."],
+ ["Sanción por no aprehender (D. 1165 648)","200 % del valor en aduana; 150 % si es perecedera, consumida o transformada."],
+ ["Cambiario (D. Ley 2245)","Cargos 5 años; descargos 2 meses; sanción 2 años; recurso 1 mes; 7 meses para resolver; reducción 40, 60 y 75 %."],
+ ["Petición (Ley 1755)","15 días general; 10 días documentos; 30 días consultas."],
+ ["Recursos CPACA","Reposición y apelación 10 días; queja 5 días; silencio negativo 3 meses; nulidad y restablecimiento 4 meses."]
+];
+
+const rpPrio=n=>["","","Complementario","Importante","Muy importante","Prioridad máxima"][n]||"";
+function rpText(r){ return r.t+". "+r.foco+" "+r.b.map(x=>x[0]+". "+x[1]).join(" ")+" Trampas frecuentes. "+r.t2.join(" ")+" Memoriza. "+r.m.join(". ") }
+function repasoPage(){
+ const order=[...RP].sort((a,b)=>(b.prio-a.prio)||((b.id==='r-plazos')-(a.id==='r-plazos')));
+ let h=`<section class="pagehead"><p class="muted cap">Consolidado para leer y escuchar</p><h1>Repaso en audio</h1>
+ <p class="lead">Cada tema explicado completo: de qué va, qué te van a preguntar, cómo funciona, dónde se equivoca la gente y qué memorizar. Ordenado del más importante al menos. Pulsa «Escuchar» y estudia como un podcast.</p>
+ <div class="row"><button class="primary big" id="rpAll">🔊 Escuchar todo el repaso</button> <a class="btn primary" href="#infracciones">⚖️ Infracciones y sanciones: todo el detalle</a></div></section>
+ <nav class="rpidx" aria-label="Temas">${order.map(r=>`<a href="#${r.id}" data-rp="${r.id}">${esc(r.t)}</a>`).join("")}</nav>`;
+ order.forEach(r=>{ h+=`<section class="card rp" id="${r.id}"><div class="th"><h2>${esc(r.t)}</h2><span class="badge p${r.prio}">${rpPrio(r.prio)}</span></div>
+ <p class="foco"><b>Qué te van a preguntar.</b> ${esc(r.foco)}</p>
+ <div class="row"><button class="primary" data-pl="${r.id}">🔊 Escuchar este tema</button> <a class="btn" href="#${r.g}">Abrir tema completo</a></div>
+ ${r.b.map(([a,b])=>`<h3>${esc(a)}</h3><p>${esc(b)}</p>`).join("")}
+ <h3>Trampas frecuentes</h3><ul class="kl">${r.t2.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>
+ <h3>Memoriza</h3><ul class="kl mem">${r.m.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></section>` });
+ h+=`<p class="note">Los plazos y artículos del Estatuto Tributario, Decreto 1165, Decreto Ley 2245, Resolución 180, Resolución Externa 1, DCIN-83 y Ley 2586 salen de los documentos cargados en esta app. Los temas básicos (CPACA, petición, Constitución, MIPG, estadística, ofimática, servicio, LA/FT) se redactaron con conocimiento general y deben contrastarse con el texto de tu guía.</p>`;
+ app.innerHTML=h; document.title="Repaso en audio · Estudio DIAN Gestor I";
+ app.querySelectorAll("[data-pl]").forEach(b=>b.onclick=()=>{const r=RP.find(x=>x.id===b.dataset.pl); ttsPlay(rpText(r),r.t,document.getElementById(r.id))});
+ document.getElementById("rpAll").onclick=()=>ttsPlay(order.map(rpText).join(" "),"Repaso completo",null);
+ window.scrollTo(0,0);
+}
+
+
+/* ============ INFRACCIONES Y SANCIONES: aduaneras, tributarias y responsabilidad DIAN ============ */
+const INF_ADU=[600,602,603,604,605,606,607,608,609,610,611,612,613,614,615,616,617,618,619,620,621,622,623,624,625,626,627,628,629,630,631,632,633,634,635,636,637,638,639,640,641,642,643,644,645,646,647,648];
+const INF_TRIB=["634","634-1","635","636","637","638","639","640","640-1","640-2","641","642","643","644","645","646","647","647-1","648","650","650-1","651","652","652-1","653","654","655","656","657","657-1","658","658-1","658-2","658-3","659","659-1","660","661","661-1","662","663","664","665","666","667","668","669","670","671","671-1","671-2","671-3","672","673","673-1","674","675","676","676-1","676-2","676-3","677","678"];
+const INF_DIAN=[["et624","679"],["et624","680"],["et624","681"],["et624","682"],["et624","683"],["et624","560"],["et624","561"],["et624","562"],["et624","688"],["et624","691"],["et624","721"],["et624","853"],["et624","732"],["et624","855"],["et624","858"],["d1165","600"],["d1165","604"],["d1165","611"]];
+const INF_RES={
+adu:[
+ ["Reglas generales (arts. 600 a 614)","La autoridad aduanera liquida, decomisa y sanciona sin perjuicio de la responsabilidad civil, penal, fiscal o cambiaria (600). Solo es infracción lo previsto en el título; no se sanciona por interpretación extensiva (602). Sanciones: multa, suspensión o cancelación, según falta leve, grave o gravísima (603). Se pagan además los tributos aduaneros."],
+ ["Suspensión provisional (605 y 606)","Medida cautelar excepcional dentro del proceso sancionatorio, solo con prueba fehaciente de hechos que den lugar a cancelación de la autorización, habilitación o registro."],
+ ["Gradualidad (607)","Un hecho con varias infracciones: se aplica la más grave y la cancelación prevalece sobre la multa. Si todas son multa, la más alta más 20 %, sin superar la suma de todas. Infracciones de una declaración y sus soportes cuentan como un solo hecho. Reincidencia en 5 años: aumentos sucesivos de 20 % sobre la multa, máximo 100 % de la multa base, y no convierte la infracción en grave."],
+ ["Reducciones (609)","Allanamiento, información extemporánea y finalización extemporánea de un régimen antes de que intervenga la autoridad. Las dos últimas dejan la multa en el 80 % del valor inicial y se acumulan con el allanamiento."],
+ ["Allanamiento (610)","Multa al 20 % si reconoce por escrito antes del requerimiento especial aduanero; al 40 % después del requerimiento y antes de la decisión de fondo; al 60 % dentro del término del recurso. Debe anexar el recibo de pago de tributos, intereses y sanción reducida. No aplica a intereses de mora, a la multa por no poder aprehender ni al rescate. Si se niega, solo cabe reposición."],
+ ["Caducidad y prescripción (611 y 612)","La facultad sancionatoria caduca en 3 años desde el hecho; el acto debe estar expedido y notificado en ese plazo. Si no se sabe la fecha, desde que la autoridad conoció. Hechos sucesivos: desde el último. Si un juez debe decidir un delito (contrabando, lavado, etc.), cuenta desde la ejecutoria de la sentencia condenatoria. No aplica a sanciones dentro de una liquidación oficial, que siguen la firmeza de la declaración. La sanción prescribe a los 5 años de su ejecutoria."],
+ ["Errores formales (613)","No sancionables: errores que no afectan tributos, sanciones, rescate, restricciones ni control; errores de transcripción de los documentos de viaje; errores de transcripción en los servicios informáticos."],
+ ["Exoneración (614)","Fuerza mayor, caso fortuito, hecho imprevisible de un tercero, orden legítima de otra autoridad, salvar un derecho de un peligro inminente, fallas imprevistas de los sistemas propios (si cumple manualmente) y contingencias de los servicios informáticos."],
+ ["Importación, declarantes (615)","Gravísima: sustraer o sustituir mercancía sujeta a control, multa del 100 % del FOB; agencias, UAP y ALTEX pueden recibir suspensión hasta 3 meses o cancelación. Graves y leves: lee el texto completo del art. 615 más abajo."],
+ ["Mercancía no aprehendida (648)","Multa del 200 % del valor en aduana o avalúo al importador y poseedor o tenedor. 150 % del avalúo si es perecedera, consumida, destruida, transformada, ensamblada o hay imposibilidad jurídica. Se cobra una sola vez: quien la paga extingue la obligación de los demás. No procede contra el tercero adquirente con factura legal. Se extingue si la mercancía se pone a disposición antes de la ejecutoria. Requiere haber cancelado previamente el levante (art. 650)."],
+ ["Por actor (616 a 646)","Importación temporal para reexportación (616), exportación (617), poliductos (618), tránsito (619), tráfico fronterizo (620), PEX (621), agencias de aduanas (622), UAP (623), ALTEX (624), zonas francas (625 a 627), depósitos (628 a 632), puertos y muelles (633), servicios informáticos (634), tráfico postal (635), transportadores (636), agentes de carga (637), valoración (638), origen (639), resoluciones anticipadas (640), Urabá, Tumaco y Maicao (641), San Andrés (642), comercializadoras internacionales (643), admisión temporal SEIT (644), vehículos Ley 191 (645) y otras infracciones (646). Cada uno está abajo completo."]],
+trib:[
+ ["Intereses y reglas (634 a 640)","Intereses moratorios por día calendario de retardo; la tasa se liquida diaria con base en la tasa de usura (634 y 635). Las sanciones se imponen por resolución independiente o en liquidaciones oficiales (637). Prescriben en el mismo plazo de la liquidación oficial, o, si es por resolución independiente, en el plazo propio (638). Sanción mínima: 10 UVT (639). Reducción cuando la liquida el contribuyente: 50 % si no cometió la misma conducta en los 2 años anteriores y no hay pliego de cargos, requerimiento o emplazamiento; 75 % si no la cometió en el año anterior (640)."],
+ ["Extemporaneidad (641)","5 % del impuesto a cargo por cada mes o fracción, máximo 100 %. Sin impuesto a cargo: 0,5 % de los ingresos brutos por mes, con tope; sin ingresos: 1 % del patrimonio líquido del año anterior, con tope. Después del emplazamiento (642): 10 % mensual, máximo 200 %."],
+ ["No declarar (643)","Renta: 20 % de consignaciones o ingresos, o 20 % de los ingresos de la última declaración, el mayor. IVA o consumo: 10 %. Retenciones: 10 % de cheques o costos, o 100 % de las retenciones de la última declaración, el mayor. Timbre: 5 veces el impuesto. Gasolina y ACPM o carbono: 20 % del impuesto."],
+ ["Corrección (644 a 646)","Corregir después del plazo y antes del emplazamiento: 10 % del mayor valor a pagar o menor saldo a favor. Después del emplazamiento y antes del requerimiento especial: 20 %. Declaración de ingresos y patrimonio: 0,5 % del patrimonio líquido (645). Corrección aritmética hecha por la DIAN: 30 %, reducida a la mitad si acepta, renuncia al recurso y paga (646)."],
+ ["Inexactitud (647 y 648)","160 % de la diferencia entre lo liquidado oficialmente y lo declarado. 200 % si omite activos o incluye pasivos inexistentes. 160 % también para conductas del num. 5 del 647 o abuso tributario. No hay inexactitud cuando solo hay diferencia de criterio sobre el derecho aplicable con hechos completos y verdaderos."],
+ ["Información (650 a 651)","Uso fraudulento de cédulas: denuncia por fraude procesal y desconocimiento de costos (650). Información no enviada, errónea o extemporánea: multa hasta 7.500 UVT: 1 % de las sumas no informadas, 0,7 % de las erróneas, 0,5 % de las extemporáneas, o 0,5 UVT por dato (651)."],
+ ["Facturación y clausura (652 a 658-3)","Factura sin requisitos de los literales a, h, i del art. 617: 1 % de las operaciones, hasta 950 UVT (652). Clausura por 3 días por no facturar o facturar sin requisitos, por sistemas de supresión de ventas, doble contabilidad o doble facturación (657); por 30 días cuando se aprehenden mercancías por violar el régimen aduanero. Romper sellos: 658. Administradores y representantes: 20 % de la sanción al contribuyente, hasta 4.100 UVT (658-1). RUT: clausura de 1 día por mes de retraso o 1 UVT por día (658-3)."],
+ ["Contabilidad (654 a 656)","No llevar libros, doble contabilidad, no exhibirlos y similares: 0,5 % del mayor valor entre patrimonio líquido e ingresos netos del año anterior, hasta 20.000 UVT. Se reduce según el momento de aceptación (656)."],
+ ["Contadores y revisores (659 a 661)","Violar normas de la profesión: sanción y suspensión de la facultad de firmar declaraciones. Se les envía requerimiento previo dentro de los 10 días de la providencia y tienen 1 mes para responder (661)."],
+ ["Otras (662 a 678)","Gastos no explicados: 100 % de la diferencia (663). Aportes parafiscales sin acreditar (664). No consignar retenciones en 2 meses o el IVA en el mes siguiente al bimestre: sanción penal de peculado (665); sin responsabilidad si extingue la obligación (parágrafo). Certificar mal lo retenido: falsedad (666). Omitir ingresos o servir de instrumento de evasión en IVA: multa igual al valor de la operación (669). Devoluciones improcedentes: reintegro con intereses (670). Proveedor ficticio: sin deducción ni IVA descontable (671). Notarios: doble del retenido (672). Entidades recaudadoras: 674 a 678."]],
+dian:[
+ ["Principio (683)","El funcionario es servidor público y aplica la ley con espíritu de justicia: el Estado no pretende exigir más de lo que la ley dispuso."],
+ ["Destitución con mala conducta (679)","Violar la reserva de las declaraciones, exigir o aceptar propinas por trámites tributarios, y reincidir en el incumplimiento de deberes."],
+ ["Mala liquidación (680)","Los liquidadores responden si, según la decisión definitiva de los recursos, violaron manifiestamente la ley sustantiva. La responsabilidad se extiende a quien confirmó en la vía gubernativa. Reincidir más de tres veces es causal de destitución. La Administración debe dar el nombre del liquidador a quien lo pida."],
+ ["Términos (681)","Pretermitir los términos legales se sanciona con destitución; también el superior que lo conoce y no pide la destitución."],
+ ["Devoluciones tardías (682)","Los funcionarios que incumplan los términos de devolución responden ante el Tesoro por los intereses de su propia mora. Resolución motivada del Administrador, traslado de cargos por 10 días, reposición en 10 días y descuento por nómina. No imponerla o no hacerla efectiva es mala conducta."],
+ ["Competencias","Competentes: los funcionarios según la estructura funcional (560), con delegación por resolución (561). Fiscalización profiere requerimientos y emplazamientos (688). Liquidación profiere liquidaciones (691). Recursos Tributarios falla reconsideraciones (721). Devoluciones: la unidad de devoluciones o recaudo (853). Grandes contribuyentes los define el Director por resolución (562)."],
+ ["Términos de la DIAN","Resolver reconsideración: 1 año (732). Devolver renta e IVA: 50 días (855). Auto inadmisorio de devolución: 15 días (858). Liquidación de revisión: 6 meses tras la respuesta (710). Corrección aritmética: 2 años (699). Aforo: 5 años (717)."],
+ ["Aduana (600, 604, 611)","La DIAN debe notificar la sanción dentro de 3 años del hecho (caducidad); las investigaciones aduaneras son reservadas (604)."]]
+};
+let infTab="adu";
+function infBlock(docId,n){
+ const d=DOCS.find(x=>x.id===docId); if(!d) return ""; const j=d.a.findIndex(x=>!x.h&&(x.n==="Art. "+n)); if(j<0) return ""; const a=d.a[j];
+ let h=`<details class="art" id="inf-${docId}-${j}"><summary><span class="num">${esc(a.n)}</span><span class="atitle">${esc(a.t||"")}</span><span class="caret">›</span></summary><div class="abody">${a.r?`<p>${esc(a.r)}</p>`:""}`;
+ (a.p||[]).forEach((p,pi)=>{h+=parHTML(p,pi)}); return h+`</div></details>`;
+}
+function infText(k){ return INF_RES[k].map(x=>x[0]+". "+x[1]).join(" ") }
+function infraccionesPage(){
+ const tabs=[["adu","Aduaneras"],["trib","Tributarias"],["dian","Responsabilidad DIAN"]];
+ const T2={adu:{t:"Infracciones aduaneras",src:"Decreto 1165 de 2019, título 14 (texto completo cargado)",list:INF_ADU.map(n=>infBlock("d1165",n))},
+  trib:{t:"Sanciones tributarias",src:"Estatuto Tributario, arts. 634 a 678 (texto completo cargado)",list:INF_TRIB.map(n=>infBlock("et624",n))},
+  dian:{t:"Responsabilidad de la DIAN y sus funcionarios",src:"Estatuto Tributario y Decreto 1165",list:INF_DIAN.map(([d,n])=>infBlock(d,n))}}[infTab];
+ let h=`<section class="pagehead"><p class="muted cap">Estudio completo y específico</p><h1>Infracciones y sanciones</h1>
+ <p class="lead">Primero el resumen rápido de todo; después el texto completo de cada artículo para no dejar nada por fuera.</p>
+ <div class="chips" role="tablist">${tabs.map(([k,l])=>`<button role="tab" data-it="${k}" aria-pressed="${infTab===k}">${l}</button>`).join("")}</div></section>
+ <section class="card"><div class="th"><h2>Resumen rápido · ${esc(T2.t)}</h2></div><div class="row"><button class="primary" id="infListen">🔊 Escuchar el resumen</button></div>
+ ${INF_RES[infTab].map(([a,b])=>`<h3>${esc(a)}</h3><p>${esc(b)}</p>`).join("")}</section>
+ <section class="card"><div class="th"><h2>Texto completo</h2><span class="muted">${esc(T2.src)}</span></div>
+ <div class="toolbar"><button id="infOpen">Desplegar todo</button><button id="infClose">Plegar todo</button></div>
+ <section class="law">${T2.list.join("")}</section></section>
+ <p class="note">Las cifras y plazos salen del texto cargado en la app. Pueden existir modificaciones posteriores: confirma la vigencia en el Normograma DIAN. Recuerda que el examen aplica normas vigentes y expedidas antes del 19-jun-2026.</p>`;
+ app.innerHTML=h; document.title="Infracciones y sanciones · Estudio DIAN Gestor I";
+ app.querySelectorAll("[data-it]").forEach(b=>b.onclick=()=>{infTab=b.dataset.it;infraccionesPage()});
+ document.getElementById("infListen").onclick=()=>ttsPlay(infText(infTab),T2.t,null);
+ document.getElementById("infOpen").onclick=()=>app.querySelectorAll("details.art,details.par").forEach(x=>x.open=true);
+ document.getElementById("infClose").onclick=()=>app.querySelectorAll("details.art,details.par").forEach(x=>x.open=false);
+ window.scrollTo(0,0);
+}
+
 const ICN={
+ claves:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 16.8 6.1 20.1l1.3-6.6L2.5 8.9l6.6-.8L12 2Z"/></svg>',
  hoy:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2.8a1 1 0 0 1 1 1V5h8V3.8a1 1 0 1 1 2 0V5h.5A2.5 2.5 0 0 1 21 7.5v11A2.5 2.5 0 0 1 18.5 21h-13A2.5 2.5 0 0 1 3 18.5v-11A2.5 2.5 0 0 1 5.5 5H6V3.8a1 1 0 0 1 1-1ZM5 10v8.5c0 .28.22.5.5.5h13a.5.5 0 0 0 .5-.5V10H5Zm3 2.5h3v3H8v-3Z"/></svg>',
  estudiar:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.5 3A2.5 2.5 0 0 0 3 5.5v13A2.5 2.5 0 0 0 5.5 21H19a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H5.5ZM5 5.5a.5.5 0 0 1 .5-.5H18v11H5.5c-.17 0-.34.02-.5.06V5.5ZM5.5 18H18v1H5.5a.5.5 0 0 1 0-1Z"/></svg>',
  simulacro:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5a9.5 9.5 0 1 0 0 19 9.5 9.5 0 0 0 0-19ZM4.5 12a7.5 7.5 0 1 1 15 0 7.5 7.5 0 0 1-15 0Zm6.2 3.6-2.6-2.6 1.4-1.4 1.2 1.2 3.6-3.6 1.4 1.4-5 5Z"/></svg>',
@@ -2292,12 +2761,12 @@ const ICN={
  check:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.2 16.6 5 12.4l1.4-1.4 2.8 2.8 8.4-8.4L19 6.8l-9.8 9.8Z"/></svg>'
 };
 function navSet(id){
- const k=id===""||id==="hoy"?"hoy":id==="simulacro"?"simulacro":id==="progreso"?"progreso":"estudiar";
+ const k=id===""||id==="hoy"?"hoy":id==="simulacro"?"simulacro":id==="progreso"?"progreso":(id==="claves"||id==="repaso"||id==="infracciones"||id.startsWith("r-"))?"claves":"estudiar";
  document.querySelectorAll("#gnav a").forEach(a=>{ const on=a.dataset.k===k; a.classList.toggle("on",on); if(on) a.setAttribute("aria-current","page"); else a.removeAttribute("aria-current") });
 }
 function navInit(){
  const n=document.createElement("nav"); n.id="gnav"; n.setAttribute("aria-label","Secciones");
- const it=[["hoy","Hoy","#hoy"],["estudiar","Estudiar","#estudiar"],["simulacro","Practicar","#simulacro"],["progreso","Progreso","#progreso"]];
+ const it=[["hoy","Hoy","#hoy"],["estudiar","Estudiar","#estudiar"],["claves","Claves","#claves"],["simulacro","Practicar","#simulacro"],["progreso","Progreso","#progreso"]];
  n.innerHTML=it.map(([k,l,h])=>`<a href="${h}" data-k="${k}">${ICN[k]}<span>${l}</span></a>`).join("");
  document.body.appendChild(n);
 }
@@ -2310,6 +2779,7 @@ function hoyPage(){
  const allDone=PLAN7.every((_,i)=>dayDone(i+1));
  const hrs=m=>m>=60?(Math.floor(m/60)+" h"+(m%60?" "+(m%60)+" min":"")):(m+" min");
  let h=`<section class="pagehead"><p class="muted cap">${esc(dateLong())}</p>
+  <p class="muted"><b>${examDias()>0?"Faltan "+examDias()+" días para el examen (8 nov)":"Examen: 8 nov"}</b> · <a href="#claves">Ver claves</a> · <a href="#repaso">Repaso en audio</a> · <a href="#infracciones">Infracciones</a></p>
   <h1>${started&&!over?`Día ${di} de 7`:over?"Tu semana terminó":"Tu semana de estudio"}</h1>
   <p class="lead"><b>${esc(day.t)}.</b> ${esc(day.d)}</p></section>`;
  if(!started){
@@ -2589,6 +3059,10 @@ function route(){const id=decodeURIComponent(location.hash.slice(1));
  if(id==="estudiar"){modo="guia";try{localStorage.setItem("dian-modo",modo)}catch(e){};homeGuia();return}
  if(id==="indicadores"){modo="ind";try{localStorage.setItem("dian-modo",modo)}catch(e){};home();return}
  if(id==="progreso"){progresoPage();return}
+ if(id==="claves"){clavesPage();return}
+ if(id==="repaso"){repasoPage();return}
+ if(id==="infracciones"){infraccionesPage();return}
+ if(RP.some(r=>r.id===id)){repasoPage();setTimeout(()=>{const e=document.getElementById(id);e&&e.scrollIntoView()},50);return}
  if(id==="simulacro"){simPage();return}
  if(id.startsWith(DOC_TOPIC+"-")){const d=DOCS.find(x=>x.id===id.slice(DOC_TOPIC.length+1)); const t=T.find(x=>x.id===DOC_TOPIC); if(d&&t){docPage(t,d);return}}
  const g=GUIA.find(x=>x.id===id); if(g){guidePage(g);return}
