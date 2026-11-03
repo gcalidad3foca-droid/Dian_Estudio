@@ -3,6 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="theme-color" content="#1d3a8a">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
 <title>Estudio DIAN Gestor I</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -551,12 +556,29 @@ button.big{min-height:50px;padding:12px 24px;font-size:1.02rem;border-radius:14p
 .tblw{overflow-x:auto}
 .flashc{display:block;width:100%;text-align:left;padding:1rem;border:1px solid var(--line,#ddd);border-radius:12px;background:transparent;color:inherit;font:inherit;min-height:7rem}
 .flashc b{display:block;margin-bottom:.5rem}.flashc span{opacity:.85}
-#gnav{grid-template-columns:repeat(5,1fr)}
+#gnav a{flex:1;min-width:0}#gnav a span{font-size:.68rem}
 .rpidx{display:flex;flex-wrap:wrap;gap:.4rem;margin:.5rem 0 1rem}.rpidx a{padding:.35rem .7rem;border:1px solid var(--rule,#ddd);border-radius:99px;font-size:.85rem;text-decoration:none;color:inherit}
 .rp h3{margin:1rem 0 .25rem;font-size:1rem}.rp p{line-height:1.6}.rp .foco{padding:.7rem .9rem;border-left:3px solid var(--accent,#2b5cd6);background:rgba(43,92,214,.07);border-radius:6px}
 .badge{font-size:.75rem;padding:.2rem .6rem;border-radius:99px;border:1px solid var(--rule,#ddd);white-space:nowrap}.badge.p5{background:#c0392b;color:#fff;border-color:#c0392b}.badge.p4{background:#d98e04;color:#fff;border-color:#d98e04}
 .kl.mem li{font-weight:600}
 .btn{display:inline-block;padding:.5rem .9rem;border:1px solid var(--rule,#ddd);border-radius:10px;text-decoration:none;color:inherit}
+.nlist{list-style:none;margin:.5rem 0 0;padding:0;display:grid;gap:.6rem}
+.nlist li{display:flex;gap:.8rem;align-items:center;padding:.6rem;border:1px solid var(--rule,#ddd);border-radius:14px}
+.nplay{flex:none;display:grid;place-items:center;width:46px;height:46px;border-radius:50%;border:0;background:var(--accent,#2b5cd6);color:var(--accent-fg,#fff);cursor:pointer;text-decoration:none}
+.nplay svg{width:22px;height:22px;fill:currentColor}
+.nbody{display:flex;flex-direction:column;gap:2px;min-width:0}.nbody small{color:var(--muted,#666);line-height:1.35}
+.badge.real{background:#1c7c4d;color:#fff;border-color:#1c7c4d;align-self:flex-start}
+.nbody .badge{align-self:flex-start;margin-top:3px}
+#ttsbar.file .tp-more .chkline,#ttsbar.file #ttsVoice,#ttsbar.file label:has(#ttsVoice){display:none}
+#ttsbar .tp-prog{cursor:pointer}
+@media (min-width:900px){
+ #ttsbar{left:calc(230px + 24px);right:24px;max-width:760px;margin-left:auto;margin-right:auto}
+ body.ttson main{padding-bottom:230px}
+}
+@media (max-width:899px){
+ #ttsbar{bottom:calc(72px + env(safe-area-inset-bottom,0px))}
+ body.ttson main{padding-bottom:300px}
+}
 </style>
 
 </head>
@@ -2357,7 +2379,7 @@ function clavesPage(){
  let h=`<section class="pagehead"><p class="muted cap">Examen · 8 de noviembre de 2026</p><h1>Claves del examen</h1>
  <p class="lead"><b>${dTxt}.</b> Lo esencial por tema, con los números que más se preguntan. Nadie puede saber las preguntas exactas: esto cubre lo que la guía oficial y las normas citadas hacen más probable.</p></section>
  <section class="card"><h2>Datos del examen</h2><ul class="kl"><li>Convocatoria DIAN 2676, cargo Gestor I.</li><li>Prueba escrita de opción múltiple; las funcionales son eliminatorias con mínimo 70/100.</li><li>Peso: 65 % funcionales, 25 % básicas, 10 % comportamentales.</li><li>Normas vigentes y expedidas antes del 19-jun-2026.</li></ul>
- <div class="row"><a class="btn primary" href="#repaso">📚 Repaso completo en audio</a> <a class="btn primary" href="#infracciones">⚖️ Infracciones y sanciones (todo)</a> <button id="clAudio">🔊 Escuchar claves</button></div></section>
+ <div class="row"><a class="btn primary" href="#repaso">📚 Repaso completo en audio</a> <a class="btn primary" href="#infracciones">⚖️ Infracciones y sanciones (todo)</a> <a class="btn primary" href="#normas">🎧 Normas en audio</a> <button id="clAudio">🔊 Escuchar claves</button></div></section>
  <section class="card"><h2>Trucos para responder</h2><ul class="kl">${PJS.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></section>
  <section class="card"><h2>Ley 2586 frente al régimen anterior</h2><div class="tblw"><table class="cmp"><thead><tr><th></th><th>Régimen anterior</th><th>Ley 2586</th></tr></thead><tbody>${COMPARA.map(r=>`<tr><th>${esc(r[0])}</th><td>${esc(r[1])}</td><td>${esc(r[2])}</td></tr>`).join("")}</tbody></table></div></section>`;
  CLAVES.forEach(c=>{ h+=`<section class="card clave" id="${c.id}"><div class="th"><h2>${esc(c.t)}</h2><span class="muted">Peso: ${esc(c.peso)}</span></div><ul class="kl">${c.pts.map(([a,b])=>`<li><b>${esc(a)}.</b> ${esc(b)}</li>`).join("")}</ul><p><a href="#${c.g}">Abrir el tema completo</a></p></section>` });
@@ -2370,7 +2392,7 @@ function clavesPage(){
   document.getElementById("fp").onclick=()=>{flashI=(flashI-1+F.length)%F.length;flashOn=false;draw()};
   document.getElementById("fn").onclick=()=>{flashI=(flashI+1)%F.length;flashOn=false;draw()}};
  draw();
- document.getElementById("clAudio").onclick=()=>ttsPlay(CLAVES.map(c=>c.t+". "+c.pts.map(p=>p[0]+". "+p[1]).join(" ")).join(" "),"Claves del examen",null);
+ document.getElementById("clAudio").onclick=()=>playKey("claves",()=>CLAVES.map(c=>c.t+". "+c.pts.map(p=>p[0]+". "+p[1]).join(" ")).join(" "),"Claves del examen",null);
  window.scrollTo(0,0);
 }
 
@@ -2663,6 +2685,118 @@ const PLAZOS_FLASH=[
  ["Recursos CPACA","Reposición y apelación 10 días; queja 5 días; silencio negativo 3 meses; nulidad y restablecimiento 4 meses."]
 ];
 
+/* ===== COMPETENCIAS BÁSICAS: desarrollo completo (conocimiento general; contrasta con tu guía) ===== */
+RP.push(
+{id:"r-const2",g:"g-constitucion",t:"Constitución · desarrollo completo",prio:4,
+ foco:"Título I (arts. 1 a 10), Título II (derechos, garantías y deberes), mecanismos de protección y estructura del Estado.",
+ b:[
+ ["Título I: principios fundamentales","Art. 1: Colombia es un Estado social de derecho organizado en forma de república unitaria, descentralizada, con autonomía de sus entidades territoriales, democrática, participativa y pluralista, fundada en el respeto de la dignidad humana, el trabajo y la solidaridad de las personas y en la prevalencia del interés general. Art. 2: fines esenciales del Estado: servir a la comunidad, promover la prosperidad general, garantizar los principios y derechos, facilitar la participación, defender la independencia nacional y asegurar la convivencia pacífica y la vigencia de un orden justo. Art. 3: la soberanía reside en el pueblo. Art. 4: la Constitución es norma de normas. Art. 5: primacía de los derechos inalienables. Art. 7: reconoce y protege la diversidad étnica y cultural. Art. 8: protección de las riquezas culturales y naturales. Art. 9: relaciones exteriores. Art. 10: el castellano es el idioma oficial y las lenguas indígenas son oficiales en sus territorios."],
+ ["Derechos fundamentales (arts. 11 a 41)","Vida (11), igualdad (13), personalidad jurídica (14), intimidad, buen nombre y habeas data (15), libre desarrollo de la personalidad (16), prohibición de esclavitud (17), libertad de conciencia (18), de cultos (19), de expresión (20), honra (21), paz (22), petición (23), circulación y residencia (24), trabajo (25), libertad de profesión (26), enseñanza (27), libertad personal (28), debido proceso (29), habeas corpus (30), doble instancia (31), reunión y manifestación (37), asociación (38), participación política (40), acceso a cargos públicos (40)."],
+ ["Derechos sociales, económicos y culturales (arts. 42 a 77) y colectivos (78 a 82)","Familia (42), igualdad de la mujer (43), derechos de los niños (44), adolescentes (45), tercera edad (46), seguridad social (48), salud y saneamiento ambiental (49), vivienda (51), educación (67), derecho a un ambiente sano (79), acceso a documentos públicos (74). Los colectivos incluyen el espacio público, el ambiente y la moral administrativa."],
+ ["Mecanismos de protección (arts. 83 a 94)","Tutela (art. 86): procedimiento preferente y sumario para proteger derechos fundamentales; el juez decide en 10 días. Acción de cumplimiento (art. 87): exigir cumplimiento de leyes y actos administrativos. Acciones populares y de grupo (art. 88). Habeas corpus (art. 30): libertad ilegal, se decide en 36 horas. Habeas data (art. 15). Principio de buena fe (art. 83). Los tratados de derechos humanos prevalecen en el orden interno (bloque de constitucionalidad, art. 93)."],
+ ["Deberes (art. 95)","Respetar los derechos ajenos, obrar con solidaridad, defender los derechos humanos, participar en la vida política, propender al logro de la paz, colaborar con la justicia, proteger los recursos naturales y contribuir al financiamiento de los gastos del Estado con justicia y equidad (numeral 9)."],
+ ["Función administrativa (art. 209) y servidores públicos","La función administrativa está al servicio de los intereses generales y se desarrolla con igualdad, moralidad, eficacia, economía, celeridad, imparcialidad y publicidad, mediante descentralización, delegación y desconcentración. Los servidores públicos son los miembros de las corporaciones públicas, los empleados y los trabajadores del Estado (art. 123). Carrera administrativa por concurso de méritos (art. 125). Los servidores responden por infringir la Constitución y la ley y por omisión o extralimitación (art. 6)."],
+ ["Principios tributarios","Legalidad: los tributos los fijan los cuerpos colegiados de elección popular (art. 338). Equidad, eficiencia y progresividad; irretroactividad (art. 363)."],
+ ["Estructura del Estado","Ramas legislativa (Congreso), ejecutiva (Presidente, Gobierno) y judicial (Corte Constitucional, Corte Suprema de Justicia, Consejo de Estado, Consejo Superior de la Judicatura, Fiscalía). Órganos autónomos y de control: Ministerio Público (Procuraduría y Defensoría), Contraloría, organización electoral (Registraduría y Consejo Nacional Electoral) y Banco de la República."]],
+ t2:["Tutela: 10 días para decidir el juez; habeas corpus: 36 horas.","Debido proceso (art. 29) se aplica a toda actuación judicial y administrativa.","Principios del art. 209 son siete: igualdad, moralidad, eficacia, economía, celeridad, imparcialidad y publicidad."],
+ m:["Art. 1 define el Estado · Art. 2 fines · Art. 4 supremacía","Art. 23 petición · Art. 29 debido proceso · Art. 86 tutela","Art. 209 principios administrativos · Art. 338 legalidad tributaria"]},
+{id:"r-cpaca2",g:"g-cpaca",t:"CPACA · desarrollo completo",prio:4,
+ foco:"Principios (art. 3), derechos y deberes (arts. 5 a 10), conflictos de interés (11 y 12), procedimiento común y sancionatorio (34 a 52), notificaciones, recursos (74 a 82), silencio, firmeza, pérdida de ejecutoriedad, revocatoria y medios de control.",
+ b:[
+ ["Principios (art. 3)","Debido proceso, igualdad, imparcialidad, buena fe, moralidad, participación, responsabilidad, transparencia, publicidad, coordinación, eficacia, economía y celeridad. Las actuaciones se interpretan con estos principios y el procedimiento debe garantizar los derechos."],
+ ["Derechos y deberes (arts. 5 a 10)","Derechos de las personas: presentar peticiones, conocer el estado de los trámites, obtener copias, recibir atención respetuosa, obtener información orientada, formular alegaciones y aportar documentos, entre otros (art. 5). Deberes: actuar con lealtad y buena fe, no formular peticiones temerarias y colaborar con las autoridades (art. 6). Deberes de las autoridades: dar trato respetuoso, atender en el orden de llegada, expedir copias, adoptar medios tecnológicos y corregir irregularidades (art. 7). Deber de información al público (art. 8). Prohibiciones (art. 9). Deber de aplicar las normas de manera uniforme a situaciones iguales y de tener en cuenta las sentencias de unificación del Consejo de Estado (art. 10)."],
+ ["Conflictos de interés y recusaciones (arts. 11 y 12)","El servidor que tenga interés particular y directo debe declararse impedido. Causales: interés propio o de familiares, ser acreedor o deudor, haber dado consejo sobre el asunto, amistad íntima o enemistad grave, entre otras. Se tramita ante el superior o el procurador; el impedimento suspende la actuación."],
+ ["Procedimiento común (arts. 34 a 46)","Se aplica a todo lo no regulado de manera especial. Inicia por petición, de oficio o por deber legal. Se forma un expediente. Se comunica a terceros determinados. Las pruebas se practican en un periodo no mayor a 30 días, ampliable a 60 si hay muchos testimonios o peritajes. Decisión: debe resolver todas las cuestiones planteadas. Las irregularidades se corrigen en cualquier momento antes de la decisión. Los errores formales se corrigen en cualquier tiempo."],
+ ["Procedimiento sancionatorio (arts. 47 a 52)","Inicia de oficio o por queja. Si hay mérito, se formulan cargos mediante acto motivado que se notifica. El investigado tiene 15 días para presentar descargos y pedir o aportar pruebas. Periodo probatorio de 30 días prorrogable a 60. Decisión motivada con identificación de la persona, hechos, pruebas, normas y sanción. Se gradúa la sanción según daño, reincidencia, capacidad económica, etc. (art. 50). La facultad sancionatoria caduca a los 3 años del hecho, y el acto sancionatorio debe estar expedido y notificado; los recursos deben resolverse en 1 año (art. 52)."],
+ ["Notificaciones","Personal (art. 67): se cita a la persona; cuando comparece se le entrega copia del acto. Citación (art. 68). Por aviso (art. 69) si no comparece. Electrónica si lo autoriza el interesado. Por estrados en audiencia. Conducta concluyente cuando la persona manifiesta conocer el acto. Los actos de carácter general se publican en el Diario Oficial o en medios oficiales."],
+ ["Recursos (arts. 74 a 82)","Reposición (ante quien decidió), apelación (ante el superior) y queja (cuando se rechaza la apelación). Reposición y apelación se interponen dentro de los 10 días siguientes a la notificación; la queja, dentro de los 5 días siguientes. No proceden contra actos de carácter general ni de trámite. Deben presentarse por escrito, sustentados, con los requisitos del art. 77. El recurso de apelación es optativo en relación con la reposición. La autoridad debe resolver y notificar la decisión (art. 82)."],
+ ["Silencio administrativo","Silencio negativo: transcurridos 3 meses sin respuesta a una petición, se entiende negada y procede acudir a la jurisdicción (art. 83). El silencio positivo opera solo cuando la ley lo contempla expresamente. Falta de respuesta a una petición de información o documentos en 10 días hace que se entienda aceptada."],
+ ["Firmeza, ejecutoriedad y pérdida","Los actos quedan en firme cuando no proceden recursos, se vencen los términos, se renuncia a los recursos o se resuelven definitivamente (art. 87). Son ejecutorios desde que quedan en firme (art. 89). Pierden fuerza ejecutoria por suspensión provisional, desaparición de sus fundamentos de hecho o de derecho, 5 años sin que la administración los ejecute, cumplimiento de la condición resolutoria y pérdida de vigencia (art. 91)."],
+ ["Revocatoria directa (arts. 93 a 97)","Causales: oposición manifiesta a la Constitución o la ley, no conformidad con el interés público o social, o agravio injustificado a una persona. No procede si se interpusieron recursos y ya se decidieron. Puede pedirse en cualquier tiempo, aun en procesos judiciales hasta el auto admisorio. Los actos de carácter particular requieren consentimiento expreso y escrito del titular."],
+ ["Medios de control (jurisdicción)","Nulidad (cualquier persona, acto general; causales: infracción de normas, falta de competencia, expedición irregular, desconocimiento del derecho de audiencia y defensa, falsa motivación y desviación de poder). Nulidad y restablecimiento del derecho (afectado en derecho subjetivo; caducidad de 4 meses desde la comunicación, notificación, ejecución o publicación). Reparación directa (2 años). Controversias contractuales (2 años)."]],
+ t2:["Reposición y apelación: 10 días; queja: 5 días.","Silencio negativo: 3 meses; positivo solo si la ley lo dice.","Nulidad y restablecimiento caduca en 4 meses; nulidad simple en cualquier tiempo.","Los actos de trámite no tienen recursos."],
+ m:["Art. 3 principios · art. 52 caducidad sancionatoria 3 años","Recursos 10 días · queja 5 · silencio 3 meses","Pérdida de ejecutoria: 5 causales (5 años sin ejecutar)","NYR: 4 meses"]},
+{id:"r-pet2",g:"g-peticion",t:"Derecho de petición (Ley 1755 de 2015) · desarrollo completo",prio:4,
+ foco:"Toda la Ley 1755 de 2015: términos 15, 10 y 30 días, peticiones incompletas, desistimiento, reserva e insistencia.",
+ b:[
+ ["Qué es","Toda persona puede presentar peticiones respetuosas a las autoridades, por motivos de interés general o particular, y obtener resolución completa y de fondo en los términos legales. También procede ante organizaciones privadas para garantizar derechos fundamentales. Es un derecho fundamental (art. 23 de la Constitución)."],
+ ["Términos de respuesta (art. 14)","Regla general: 15 días siguientes a la recepción. Documentos e información: 10 días; si no se responde en ese plazo, se entiende aceptada la petición y se entregan en 3 días. Consultas a las autoridades sobre materias a su cargo: 30 días. Si no es posible responder en el plazo, se informa antes de que venza, indicando los motivos y una fecha razonable que no puede exceder el doble del plazo inicial."],
+ ["Forma y contenido (arts. 15 y 16)","Verbal o escrita, por cualquier medio idóneo. Debe contener designación de la autoridad, nombre e identificación, dirección, objeto, razones, relación de documentos y firma cuando se presente por escrito."],
+ ["Peticiones incompletas y desistimiento (arts. 17 y 18)","Si falta algo, la autoridad requiere al peticionario dentro de los 10 días siguientes para que complete en el término de un mes. Si no lo hace, se entiende desistida y se archiva. El peticionario puede desistir expresamente en cualquier momento. Si se completa, el término de respuesta se cuenta desde entonces."],
+ ["Peticiones irrespetuosas, oscuras o reiterativas (art. 19)","Se rechazan motivadamente las irrespetuosas, oscuras o reiterativas ya resueltas, salvo derechos imprescriptibles, fundamentales o de naturaleza laboral."],
+ ["Atención prioritaria (art. 20)","Peticiones de reconocimiento de un derecho fundamental cuando deban resolverse para evitar un perjuicio irremediable, y las de periodistas para el ejercicio de la actividad."],
+ ["Falta de competencia (art. 21)","Si la autoridad no es competente, informa al interesado dentro de los 5 días siguientes y remite la petición al competente, con copia al peticionario."],
+ ["Reserva de información (arts. 24 a 27)","Solo tienen carácter reservado los documentos y la información que la Constitución o la ley así dispongan: seguridad y defensa, intimidad, secretos comerciales, investigaciones, entre otros. La negativa debe ser escrita y motivada, citando la norma. Contra la decisión de reserva el solicitante puede insistir, por escrito, dentro de los 10 días siguientes; la autoridad envía los documentos al Tribunal Administrativo o al Consejo de Estado, que decide en 10 días. Si es el Congreso o el Consejo de Estado quien guarda la información, el trámite es distinto."],
+ ["Recursos","Contra la decisión que resuelve la petición proceden los recursos del CPACA cuando se trate de actuaciones administrativas."]],
+ t2:["Documentos: 10 días; consultas: 30 días; el resto: 15 días.","Petición incompleta: requerimiento en 10 días y 1 mes para completar.","La insistencia se pide en 10 días y el tribunal decide en 10 días."],
+ m:["15 · 10 · 30 días","Incompleta: 10 días + 1 mes","Incompetencia: informar en 5 días","Insistencia: 10 + 10 días"]},
+{id:"r-trans2",g:"g-transparencia",t:"Ley de Transparencia (Ley 1712 de 2014) · desarrollo completo",prio:4,
+ foco:"Principios, definiciones, información mínima obligatoria, excepciones (arts. 18 y 19) y su duración, respuesta a solicitudes y recursos.",
+ b:[
+ ["Objeto y principios","Regular el derecho de acceso a la información pública, los procedimientos para ejercerlo y las excepciones. Principios: máxima publicidad, transparencia, buena fe, facilitación, no discriminación, gratuidad, celeridad, eficacia, calidad de la información, divulgación proactiva y responsabilidad en el uso de la información."],
+ ["Sujetos obligados","Entidades públicas de todos los niveles y ramas, órganos de control, personas que ejercen función pública o prestan servicios públicos, partidos políticos y otras organizaciones que reciben recursos públicos."],
+ ["Definiciones (art. 6)","Información pública: la que se genera, obtiene o controla el sujeto obligado, sin restricción. Información pública clasificada: la que pertenece al ámbito propio de una persona, es exceptuada por daño a derechos (intimidad, vida, salud, secretos comerciales). Información pública reservada: exceptuada por daño a intereses públicos (defensa y seguridad, orden público, relaciones internacionales, debido proceso, administración de justicia, estabilidad macroeconómica, salud pública). Documento en construcción, activos de información, índice de información clasificada y reservada."],
+ ["Publicidad mínima obligatoria (arts. 9 a 14)","Estructura orgánica, funciones, deberes, ubicación de sedes, horarios, presupuesto, planes, directorio de servidores y contratistas, normas, trámites, informes de gestión, contratación, mecanismos de participación y de PQRS, y registro de activos de información. Debe publicarse en el sitio web con un esquema de publicación."],
+ ["Excepciones (arts. 18 y 19)","Art. 18: información clasificada (derecho de toda persona a la intimidad, la vida, la salud o la seguridad; secretos comerciales, industriales y profesionales). Art. 19: información reservada (seguridad nacional y pública, defensa, relaciones internacionales, prevención o investigación de delitos, debido proceso, administración efectiva de la justicia, derechos de la infancia, estabilidad macroeconómica y financiera, salud pública). Cuando solo parte del documento es reservado, se divulga el resto (art. 21)."],
+ ["Duración de la reserva (art. 22)","La reserva no puede exceder 15 años desde la creación del documento. Puede levantarse antes si desaparecen las causas. Las excepciones del art. 18 sobre intimidad no tienen límite temporal igual."],
+ ["Solicitudes y respuesta","La respuesta debe darse en el término de 10 días hábiles; si no es posible, se informa el plazo, que no puede pasar de 10 días hábiles adicionales. Si la negativa se basa en una excepción, debe ser motivada y por escrito. Si la entidad no responde, se entiende negada y el solicitante puede acudir al mecanismo de insistencia."],
+ ["Recursos","Contra la decisión que niega el acceso procede recurso de reposición ante quien decidió y, ante el Ministerio Público o tribunal, el mecanismo de insistencia (como en la Ley 1755)."]],
+ t2:["Clasificada protege personas; reservada protege intereses públicos.","La reserva máxima es de 15 años; no existe reserva permanente de intereses públicos.","La divulgación es parcial cuando solo una parte es reservada."],
+ m:["Art. 18 clasificada · art. 19 reservada · art. 22 máximo 15 años","Máxima publicidad es el principio central"]},
+{id:"r-mipg2",g:"g-mipg",t:"MIPG (Decreto 1499 de 2017) · desarrollo completo",prio:4,
+ foco:"Qué es el MIPG, sus 7 dimensiones, las políticas de gestión y desempeño, las líneas de defensa y el FURAG.",
+ b:[
+ ["Qué es","Marco de referencia para dirigir, planear, ejecutar, hacer seguimiento, evaluar y controlar la gestión de las entidades públicas con el fin de generar resultados que atiendan los planes de desarrollo y resuelvan las necesidades de los ciudadanos con integridad y calidad. Opera con el Sistema de Gestión (Decreto 1499 de 2017) y el Sistema de Control Interno."],
+ ["Las 7 dimensiones","1) Talento humano, el corazón del modelo. 2) Direccionamiento estratégico y planeación. 3) Gestión con valores para resultados. 4) Evaluación de resultados. 5) Información y comunicación. 6) Gestión del conocimiento y la innovación. 7) Control interno."],
+ ["Políticas de gestión y desempeño","Gestión estratégica del talento humano; integridad; planeación institucional; gestión presupuestal y eficiencia del gasto público; fortalecimiento organizacional y simplificación de procesos; gobierno digital; seguridad digital; defensa jurídica; mejora normativa; servicio al ciudadano; racionalización de trámites; participación ciudadana en la gestión pública; seguimiento y evaluación del desempeño institucional; gestión documental; transparencia, acceso a la información pública y lucha contra la corrupción; gestión de la información estadística; gestión del conocimiento y la innovación; control interno."],
+ ["Control interno y líneas de defensa","Línea estratégica: alta dirección y Comité Institucional de Coordinación de Control Interno; define el marco y lineamientos. Primera línea: gerentes públicos y líderes de proceso; identifican y gestionan riesgos y controles en la operación. Segunda línea: oficinas de planeación, supervisores, interventores, coordinadores; monitorean y apoyan. Tercera línea: control interno o auditoría interna; evaluación independiente."],
+ ["Instancias","Comité Institucional de Gestión y Desempeño (lidera el MIPG en la entidad) y Comité Institucional de Coordinación de Control Interno."],
+ ["FURAG","Formulario Único de Reporte y Avance de la Gestión: instrumento para medir el desempeño institucional y la implementación del MIPG; permite compararse con otras entidades y definir planes de mejora."],
+ ["Autodiagnóstico y ciclo","Cada entidad hace autodiagnósticos, define planes de acción y los mide. El ciclo es planear, hacer, verificar y actuar."]],
+ t2:["La tercera línea de defensa es control interno (evaluación independiente); la primera es quien ejecuta.","Talento humano se considera el corazón del MIPG.","Dimensiones: 7; no confundas con políticas (más de 17)."],
+ m:["7 dimensiones · 4 niveles de defensa (estratégica + 3 líneas)","FURAG mide el desempeño","Decreto 1499 de 2017"]},
+{id:"r-doc2",g:"g-gestion-documental",t:"Gestión documental · desarrollo completo",prio:4,
+ foco:"Ley 594 de 2000, Acuerdo 001 de 2024 del AGN, ciclo vital, instrumentos archivísticos, organización de archivos.",
+ b:[
+ ["Ley 594 de 2000","Ley General de Archivos. Objeto: regular la función archivística del Estado. Principios: la función archivística es de interés público, fundamento de la eficacia de la administración y su patrimonio documental. Define archivo, documento de archivo, ciclo vital, archivo total, fondos acumulados y gestión documental como el conjunto de actividades administrativas y técnicas de planificación, manejo y organización de la documentación."],
+ ["Ciclo vital y tipos de archivo","Archivo de gestión: documentos en trámite, consulta frecuente por la oficina. Archivo central: documentos que han cumplido su trámite y tienen consulta esporádica. Archivo histórico: conservación permanente, valor secundario (histórico, científico, cultural). Las transferencias primarias van de gestión a central y las secundarias de central a histórico."],
+ ["Valores y disposición final","Valor primario (administrativo, legal, fiscal, contable) y valor secundario (histórico, científico, cultural). Disposición final: conservación total, eliminación, selección o microfilmación, según la TRD."],
+ ["Instrumentos archivísticos","CCD: cuadro de clasificación documental (series y subseries). TRD: tablas de retención documental, definen tiempo de permanencia en cada archivo y disposición final. TVD: tablas de valoración documental, para fondos acumulados. PGD: programa de gestión documental. PINAR: plan institucional de archivos. FUID: formato único de inventario documental. Banco terminológico, mapas de procesos y flujos documentales, tablas de control de acceso y modelo de requisitos."],
+ ["Organización","Clasificación (agrupar por series y subseries según la estructura), ordenación (establecer un orden dentro de las series: alfabético, numérico, cronológico) y descripción (elaborar instrumentos de consulta). Principios: procedencia (no mezclar fondos de distintas entidades) y orden original (respetar el orden en que se produjeron)."],
+ ["Acuerdo 001 de 2024 del AGN","Acuerdo Único de la Función Archivística: compila y actualiza la normativa del Archivo General de la Nación sobre gestión documental, instrumentos, organización, conservación, transferencias y documento electrónico."],
+ ["Responsabilidades","Los servidores públicos son responsables de la organización, conservación, uso y manejo de los documentos. La entrega de documentos al retirarse del cargo es obligación."]],
+ t2:["TRD define tiempos y disposición final; TVD se aplica a documentos acumulados sin TRD.","Procedencia: no mezclar fondos; orden original: mantener el orden de producción."],
+ m:["3 archivos: gestión · central · histórico","CCD · TRD · TVD · PGD · PINAR · FUID","Valor primario y secundario"]},
+{id:"r-serv2",g:"g-servicio",t:"Servicio al ciudadano · desarrollo completo",prio:4,
+ foco:"Protocolos de servicio al ciudadano de Función Pública, canales, atención incluyente, lenguaje claro y casos situacionales.",
+ b:[
+ ["Atributos del buen servicio","Respetuoso, amable, confiable, empático, oportuno y efectivo: el ciudadano debe percibir que se le escucha, se le resuelve y se le trata con dignidad."],
+ ["Canales","Presencial, telefónico, virtual (web, chat, correo, redes) y escrito. Cada canal tiene protocolos propios: saludo, identificación, escucha, solución y despedida."],
+ ["Secuencia de la atención","Saludar y presentarse, identificar la necesidad, escuchar sin interrumpir, resolver con información clara, confirmar que se entendió y despedirse con cortesía. Si no se puede resolver, orientar y hacer seguimiento."],
+ ["Lenguaje claro","Oraciones cortas, voz activa, palabras comunes, sin jerga ni siglas sin explicar, información importante primero y ejemplos concretos."],
+ ["Ciudadano molesto","Mantener la calma, escuchar, no tomar la crítica como algo personal, reconocer la molestia, no discutir, buscar una solución y, si es necesario, escalar con otro funcionario."],
+ ["Persona sorda","Ubicarse de frente con buena luz, hablar con claridad sin gritar ni exagerar, usar apoyos escritos, gestos, o intérprete de lengua de señas."],
+ ["Persona ciega o con baja visión","Presentarse, avisar de lo que se hace, describir el entorno, leer los documentos y ofrecer el brazo solo si lo solicita."],
+ ["Adulto mayor","Atención prioritaria, paciencia, ritmo pausado, lenguaje sencillo, repetir si hace falta y verificar comprensión."],
+ ["Hablante de lengua indígena","Buscar intérprete o apoyo comunitario, hablar despacio, respetar su cultura y confirmar que comprendió."],
+ ["Personas con discapacidad en general","Preguntar cómo ayudar, no suponer, dirigirse a la persona y no a su acompañante, garantizar accesibilidad."]],
+ t2:["Se responde con la opción que muestre empatía, respeto y solución, no con evasiva ni confrontación.","Atención prioritaria para adultos mayores, gestantes, personas con discapacidad."],
+ m:["Respeto, empatía, claridad y solución","Lenguaje claro: corto, activo, sin jerga"]},
+{id:"r-ofi2",g:"g-ofimatica",t:"Ofimática · desarrollo completo",prio:3,
+ foco:"Excel (referencias, SI, BUSCARV/BUSCARX, SUMAR.SI, CONTAR.SI, tablas dinámicas, filtros, formato condicional, gráficos), Outlook, Word y PowerPoint.",
+ b:[
+ ["Excel: referencias","Relativa (A1), absoluta ($A$1) y mixta ($A1 o A$1). F4 alterna entre ellas. Al copiar una fórmula, la relativa cambia y la absoluta no."],
+ ["Excel: funciones lógicas y de búsqueda","SI(condición; si_verdadero; si_falso), anidable y con Y y O. SI.ERROR atrapa errores. BUSCARV(valor; matriz; columna; exacto): busca en la primera columna y devuelve de la derecha; use FALSO o 0 para coincidencia exacta. BUSCARX busca en cualquier dirección. COINCIDIR e INDICE combinados reemplazan a BUSCARV."],
+ ["Excel: estadísticas condicionales","SUMAR.SI(rango; criterio; rango_suma), CONTAR.SI(rango; criterio), PROMEDIO.SI y sus versiones .CONJUNTO para varios criterios. CONTARA cuenta no vacías, CONTAR cuenta números, CONTAR.BLANCO cuenta vacías. MAX, MIN, PROMEDIO, MEDIANA, MODA."],
+ ["Excel: errores","#DIV/0! división por cero; #N/A valor no disponible; #REF! referencia inválida; #VALOR! tipo de dato incorrecto; #NOMBRE? nombre de función no reconocido; #NUM! número inválido."],
+ ["Excel: análisis","Tablas dinámicas resumen datos: filas, columnas, valores y filtros; se actualizan con Actualizar. Filtros y segmentaciones. Formato condicional resalta celdas según reglas. Gráficos: columnas, barras, líneas, circular, dispersión. Validación de datos restringe lo que se escribe. Ordenar y filtrar."],
+ ["Outlook","CC: copia visible; CCO: copia oculta. Reglas: mueven o marcan mensajes según criterios. Respuestas automáticas (fuera de oficina). Categorías y marcas de seguimiento. Calendario: reuniones, invitaciones y recordatorios. Firma automática. Archivos adjuntos."],
+ ["Word","Estilos (Título 1, Normal) para dar formato y estructura. Tabla de contenido automática a partir de los estilos de título. Combinar correspondencia: documento principal + origen de datos + campos combinados. Control de cambios: aceptar o rechazar modificaciones; comentarios. Encabezados, pie de página, numeración, saltos de sección, referencias cruzadas, tablas, columnas."],
+ ["PowerPoint","Patrón de diapositivas: cambios que afectan a toda la presentación. Transiciones: efecto entre diapositivas. Animaciones: efectos sobre objetos dentro de una diapositiva. Notas del orador, vista moderador (notas y siguiente diapositiva), secciones, SmartArt, temas y diseños."]],
+ t2:["Transición es entre diapositivas; animación es sobre objetos.","CC se ve; CCO se oculta.","BUSCARV exige exactitud con FALSO."],
+ m:["F4 fija la referencia","SUMAR.SI vs CONTAR.SI","Patrón de diapositivas para cambios globales"]}
+);
+
 const rpPrio=n=>["","","Complementario","Importante","Muy importante","Prioridad máxima"][n]||"";
 function rpText(r){ return r.t+". "+r.foco+" "+r.b.map(x=>x[0]+". "+x[1]).join(" ")+" Trampas frecuentes. "+r.t2.join(" ")+" Memoriza. "+r.m.join(". ") }
 function repasoPage(){
@@ -2679,8 +2813,8 @@ function repasoPage(){
  <h3>Memoriza</h3><ul class="kl mem">${r.m.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></section>` });
  h+=`<p class="note">Los plazos y artículos del Estatuto Tributario, Decreto 1165, Decreto Ley 2245, Resolución 180, Resolución Externa 1, DCIN-83 y Ley 2586 salen de los documentos cargados en esta app. Los temas básicos (CPACA, petición, Constitución, MIPG, estadística, ofimática, servicio, LA/FT) se redactaron con conocimiento general y deben contrastarse con el texto de tu guía.</p>`;
  app.innerHTML=h; document.title="Repaso en audio · Estudio DIAN Gestor I";
- app.querySelectorAll("[data-pl]").forEach(b=>b.onclick=()=>{const r=RP.find(x=>x.id===b.dataset.pl); ttsPlay(rpText(r),r.t,document.getElementById(r.id))});
- document.getElementById("rpAll").onclick=()=>ttsPlay(order.map(rpText).join(" "),"Repaso completo",null);
+ app.querySelectorAll("[data-pl]").forEach(b=>b.onclick=()=>{const r=RP.find(x=>x.id===b.dataset.pl); playKey("rp:"+r.id,()=>rpText(r),r.t,document.getElementById(r.id))});
+ document.getElementById("rpAll").onclick=()=>playKey("rp:all",()=>order.map(rpText).join(" "),"Repaso completo",null);
  window.scrollTo(0,0);
 }
 
@@ -2738,7 +2872,7 @@ function infraccionesPage(){
  let h=`<section class="pagehead"><p class="muted cap">Estudio completo y específico</p><h1>Infracciones y sanciones</h1>
  <p class="lead">Primero el resumen rápido de todo; después el texto completo de cada artículo para no dejar nada por fuera.</p>
  <div class="chips" role="tablist">${tabs.map(([k,l])=>`<button role="tab" data-it="${k}" aria-pressed="${infTab===k}">${l}</button>`).join("")}</div></section>
- <section class="card"><div class="th"><h2>Resumen rápido · ${esc(T2.t)}</h2></div><div class="row"><button class="primary" id="infListen">🔊 Escuchar el resumen</button></div>
+ <section class="card"><div class="th"><h2>Resumen rápido · ${esc(T2.t)}</h2></div><div class="row"><button class="primary" id="infListen">🔊 Escuchar el resumen</button> <button id="infFull">🔊 Escuchar el texto completo</button></div>
  ${INF_RES[infTab].map(([a,b])=>`<h3>${esc(a)}</h3><p>${esc(b)}</p>`).join("")}</section>
  <section class="card"><div class="th"><h2>Texto completo</h2><span class="muted">${esc(T2.src)}</span></div>
  <div class="toolbar"><button id="infOpen">Desplegar todo</button><button id="infClose">Plegar todo</button></div>
@@ -2746,13 +2880,145 @@ function infraccionesPage(){
  <p class="note">Las cifras y plazos salen del texto cargado en la app. Pueden existir modificaciones posteriores: confirma la vigencia en el Normograma DIAN. Recuerda que el examen aplica normas vigentes y expedidas antes del 19-jun-2026.</p>`;
  app.innerHTML=h; document.title="Infracciones y sanciones · Estudio DIAN Gestor I";
  app.querySelectorAll("[data-it]").forEach(b=>b.onclick=()=>{infTab=b.dataset.it;infraccionesPage()});
- document.getElementById("infListen").onclick=()=>ttsPlay(infText(infTab),T2.t,null);
+ document.getElementById("infListen").onclick=()=>playKey("inf:"+infTab,()=>infText(infTab),T2.t,null);
+ const FULLK={adu:"g:adu-inf",trib:"g:et-sanc",dian:"g:dian-resp"}; const ifl=document.getElementById("infFull"); if(ifl) ifl.onclick=()=>{ const it=NORMA_GROUPS.flatMap(x=>x.items).find(x=>"g:"+x.id===FULLK[infTab]); playKey(FULLK[infTab],it.txt,it.t,null) };
  document.getElementById("infOpen").onclick=()=>app.querySelectorAll("details.art,details.par").forEach(x=>x.open=true);
  document.getElementById("infClose").onclick=()=>app.querySelectorAll("details.art,details.par").forEach(x=>x.open=false);
  window.scrollTo(0,0);
 }
 
+
+/* ============ NORMAS (escuchar cada ley) + AUDIO REAL (sigue con la pantalla apagada) ============ */
+const AUD={}, AF={on:false,a:null,key:"",label:"",el:null,tick:0,fb:null};
+const AF_RATES=[0.75,0.9,1,1.1,1.25,1.5,1.75,2];
+AF.rate=parseFloat((()=>{try{return localStorage.getItem("dian-aud-rate")}catch(e){return null}})())||1;
+try{ fetch("audio/index.json",{cache:"no-cache"}).then(r=>r.ok?r.json():{}).then(j=>{Object.assign(AUD,j||{}); if(location.hash==="#normas"||location.hash==="#repaso"||location.hash==="#infracciones") route()}).catch(()=>{}) }catch(e){}
+const fmtT=s=>{s=Math.max(0,Math.floor(s||0));const m=Math.floor(s/60);return m+":"+String(s%60).padStart(2,"0")};
+const afPosKey=k=>"dian-aud-pos-"+k;
+function afSavePos(){ try{ if(AF.a&&AF.key&&AF.a.duration) localStorage.setItem(afPosKey(AF.key),String(AF.a.currentTime>AF.a.duration-8?0:Math.floor(AF.a.currentTime))) }catch(e){} }
+function afUI(){
+ const b=document.getElementById("ttsbar"); if(!b||!AF.on) return; const a=AF.a;
+ const pb=b.querySelector("#ttsPause"); pb.innerHTML=(a.paused?IC.play:IC.pause)+`<span class="sr">${a.paused?"Continuar":"Pausar"}</span>`; pb.setAttribute("aria-label",a.paused?"Continuar":"Pausar");
+ b.querySelector("#ttsLab").innerHTML=`<span class="tl-t">${esc(AF.label)}</span><span class="tl-n">${a.paused?"En pausa · ":""}${fmtT(a.currentTime)} / ${fmtT(a.duration)}</span>`;
+ b.querySelector("#ttsProg").style.width=(a.duration?Math.min(100,a.currentTime/a.duration*100):0).toFixed(1)+"%";
+ const rt=b.querySelector("#ttsRateTxt"); if(rt) rt.textContent=ttsRateTxt(AF.rate);
+}
+function afMS(){
+ if(!("mediaSession" in navigator)||!AF.on) return;
+ try{
+  navigator.mediaSession.metadata=new MediaMetadata({title:AF.label,artist:"Estudio DIAN Gestor I",album:"Audio de estudio"});
+  navigator.mediaSession.playbackState=AF.a.paused?"paused":"playing";
+  if(AF.a.duration&&navigator.mediaSession.setPositionState) navigator.mediaSession.setPositionState({duration:AF.a.duration,position:Math.min(AF.a.currentTime,AF.a.duration),playbackRate:AF.a.playbackRate||1});
+ }catch(e){}
+}
+function afStop(keepBar){
+ if(AF.a){ afSavePos(); try{AF.a.pause()}catch(e){}; AF.a.removeAttribute("src"); try{AF.a.load()}catch(e){} }
+ AF.on=false; if(AF.el){AF.el.classList.remove("reading");AF.el=null}
+ if(!keepBar){ const b=document.getElementById("ttsbar"); if(b) b.classList.remove("on","file"); document.body.classList.remove("ttson"); try{ if("mediaSession" in navigator) navigator.mediaSession.playbackState="none" }catch(e){} }
+}
+function afSeek(d){ if(!AF.on) return; const a=AF.a; a.currentTime=Math.max(0,Math.min((a.duration||1e9)-0.5,a.currentTime+d)); afUI(); afMS() }
+function afStep(d){ let k=AF_RATES.findIndex(v=>v>=AF.rate-1e-9); if(k<0) k=AF_RATES.length-1; k=Math.min(AF_RATES.length-1,Math.max(0,k+d)); AF.rate=AF_RATES[k]; try{localStorage.setItem("dian-aud-rate",String(AF.rate))}catch(e){}; if(AF.a){AF.a.playbackRate=AF.rate} afUI(); afMS() }
+function afToggle(){ if(!AF.on) return; if(AF.a.paused) AF.a.play().catch(()=>{}); else AF.a.pause(); afUI(); afMS() }
+function afPlay(key,label,el,fallback){
+ try{ ttsStop() }catch(e){}
+ if(!AF.a){
+  const a=new Audio(); a.preload="auto"; a.setAttribute("playsinline",""); AF.a=a;
+  a.addEventListener("timeupdate",()=>{ if(!AF.on) return; afUI(); const t=Date.now(); if(t-AF.tick>4000){AF.tick=t;afSavePos();afMS()} });
+  a.addEventListener("play",()=>{afUI();afMS()}); a.addEventListener("pause",()=>{afUI();afMS();afSavePos()});
+  a.addEventListener("loadedmetadata",()=>{afUI();afMS()});
+  a.addEventListener("ended",()=>{ try{localStorage.removeItem(afPosKey(AF.key))}catch(e){}; afStop() });
+  a.addEventListener("error",()=>{ if(!AF.on) return; const fb=AF.fb; afStop(); if(fb) fb() });
+ }
+ if(AF.el) AF.el.classList.remove("reading");
+ AF.on=true; AF.key=key; AF.label=label||"Audio"; AF.el=el||null; AF.fb=fallback||null; if(el) el.classList.add("reading");
+ const a=AF.a; a.src="audio/"+AUD[key].f; a.playbackRate=AF.rate; try{a.preservesPitch=true;a.mozPreservesPitch=true;a.webkitPreservesPitch=true}catch(e){}
+ let pos=0; try{ pos=parseInt(localStorage.getItem(afPosKey(key))||"0",10)||0 }catch(e){}
+ const start=()=>{ if(pos>5&&a.duration&&pos<a.duration-10) a.currentTime=pos; a.removeEventListener("loadedmetadata",start) }; a.addEventListener("loadedmetadata",start);
+ const b=ttsBar(); b.classList.add("on","file"); document.body.classList.add("ttson");
+ afMSInit(); a.play().catch(()=>{}); afUI();
+}
+let afMSdone=false;
+function afMSInit(){
+ msInit();
+ if(afMSdone||!("mediaSession" in navigator)) return; afMSdone=true;
+ const h=(n,f)=>{try{navigator.mediaSession.setActionHandler(n,f)}catch(e){}};
+ h("seekto",e=>{ if(AF.on&&e.seekTime!=null){AF.a.currentTime=e.seekTime;afUI();afMS()} });
+}
+/* un solo punto de entrada: audio real si existe; si no, voz del dispositivo */
+function playKey(key,textOrFn,label,el){
+ const tts=()=>ttsPlay(typeof textOrFn==="function"?textOrFn():textOrFn,label,el);
+ if(AUD[key]) afPlay(key,label,el,tts); else tts();
+}
+/* ---- textos de normas ---- */
+function artPlain(a){
+ const n=String(a.n||""); let t=(/^Art/.test(n)?"Artículo "+n.replace(/^Art\.\s*/,""):"Numeral "+n)+". "+(a.t?a.t.replace(/\.\s*$/,"")+". ":"")+(a.r||"");
+ (a.p||[]).forEach(p=>{ t+=" "+(typeof p==="object"?((p.l?p.l+". ":"")+p.x):p) }); return t;
+}
+const artNum=a=>{const m=/^Art\.\s*(\d+)/.exec(a.n||""); return m?+m[1]:-1};
+function docById(id){ return DOCS.find(x=>x.id===id) }
+function rangeText(docId,ranges){
+ const d=docById(docId); if(!d) return ""; const out=[];
+ d.a.forEach(a=>{ if(a.h) return; const k=artNum(a); if(k<0) return; if(ranges.some(([x,y])=>k>=x&&k<=y)) out.push(artPlain(a)) });
+ return out.join(" ");
+}
+function headText(docId,re){
+ const d=docById(docId); if(!d) return ""; let on=false; const out=[];
+ d.a.forEach(a=>{ if(a.h){ on=re.test(a.h); if(on) out.push(a.h+"."); return } if(on) out.push(artPlain(a)) }); return out.join(" ");
+}
+function docText(docId){ const d=docById(docId); return d?d.t+". "+d.a.map(a=>a.h?a.h+".":artPlain(a)).join(" "):"" }
+const NORMA_GROUPS=[
+ {sec:"Aduanero",items:[
+  {id:"adu-inf",t:"Infracciones aduaneras y sanciones (D. 1165, título 14)",d:"Reglas generales de sanciones, infracciones por actor, aprehensión y decomiso.",txt:()=>headText("d1165",/Título 14/)},
+  {id:"adu-proc",t:"Procedimientos aduaneros (D. 1165, título 16)",d:"Decomiso, requerimiento especial, liquidaciones oficiales, garantías y reconsideración.",txt:()=>headText("d1165",/Título 16/)},
+  {id:"adu-ctrl",t:"Control aduanero y fiscalización (D. 1165, título 13)",d:"Gestión del riesgo, información y fiscalización aduanera.",txt:()=>headText("d1165",/Título 13/)}]},
+ {sec:"Tributario",items:[
+  {id:"et-sanc",t:"Sanciones tributarias (ET arts. 634 a 683)",d:"Intereses, extemporaneidad, no declarar, corrección, inexactitud, facturación, clausura, contadores, y responsabilidad de funcionarios.",txt:()=>rangeText("et624",[[634,683]])},
+  {id:"et-fisc",t:"Fiscalización y liquidación (ET arts. 684 a 719)",d:"Facultades, emplazamientos, requerimiento especial, liquidaciones de corrección, revisión y aforo.",txt:()=>rangeText("et624",[[684,719]])},
+  {id:"et-disc",t:"Discusión: recursos (ET arts. 720 a 741)",d:"Reconsideración, inadmisión, nulidades y revocatoria.",txt:()=>rangeText("et624",[[720,741]])},
+  {id:"et-prueba",t:"Régimen probatorio e inspecciones (ET arts. 742 a 785)",d:"Pruebas, confesión, testimonio, inspección y peritos.",txt:()=>rangeText("et624",[[742,785]])},
+  {id:"et-cobro",t:"Cobro coactivo y devoluciones (ET arts. 823 a 865)",d:"Mandamiento de pago, excepciones, embargos, remate y devoluciones.",txt:()=>rangeText("et624",[[823,865]])},
+  {id:"et-abuso",t:"Abuso en materia tributaria (ET arts. 869 a 869-3)",d:"Recaracterización de operaciones y sus supuestos.",txt:()=>rangeText("et624",[[869,869]])},
+  {id:"dian-resp",t:"Responsabilidad de la DIAN y sus funcionarios",d:"Destitución, mala liquidación, términos, devoluciones tardías y competencias.",txt:()=>INF_DIAN.map(([d,n])=>{const D=docById(d),a=D&&D.a.find(x=>x.n==="Art. "+n);return a?artPlain(a):""}).join(" ")}]},
+ {sec:"Cambiario",items:[
+  {id:"d2245",t:"Decreto Ley 2245 de 2011 completo",d:"Infracciones cambiarias y procedimiento sancionatorio.",txt:()=>docText("d2245")},
+  {id:"r180",t:"Resolución 180 de 2012 completa",d:"Información cambiaria a la DIAN.",txt:()=>docText("r180")},
+  {id:"re1",t:"Resolución Externa 1 de 2018 completa",d:"Régimen de cambios internacionales.",txt:()=>docText("re1")},
+  {id:"dcin83",t:"Circular DCIN-83 completa",d:"Procedimientos cambiarios.",txt:()=>docText("dcin83")},
+  {id:"l2586",t:"Ley 2586 de 2026 completa",d:"Régimen sancionatorio aduanero vigente.",txt:()=>docText("l2586")}]}
+];
+function normasPage(){
+ let h=`<section class="pagehead"><p class="muted cap">Estudia cada norma escuchándola</p><h1>Normas en audio</h1>
+ <p class="lead">Pulsa ▶ en cualquier parte y escúchala completa: infracciones, sanciones, procedimientos y más. Donde hay <b>audio real</b> sigue sonando con la pantalla apagada y fuera del navegador; el resto se lee con la voz del dispositivo. Para leer el texto, abre cada norma.</p></section>`;
+ NORMA_GROUPS.forEach(s=>{
+  h+=`<section class="card"><div class="th"><h2>${esc(s.sec)}</h2></div><ul class="nlist">`;
+  s.items.forEach(it=>{ const real=!!AUD["g:"+it.id]; h+=`<li><button class="nplay" data-ng="${it.id}" aria-label="Escuchar: ${esc(it.t)}">${IC.play}</button><div class="nbody"><b>${esc(it.t)}</b><small>${esc(it.d)}</small>${real?`<span class="badge real">Audio real · sigue con pantalla apagada</span>`:`<span class="badge">Voz del dispositivo</span>`}</div></li>` });
+  h+=`</ul></section>`;
+ });
+ h+=`<section class="card"><div class="th"><h2>Normas completas con índice</h2></div><p class="muted small">Cada norma por capítulos. Abre el texto y usa los botones «Escuchar este título» o «Escuchar toda la página».</p><ul class="nlist">${DOCS.map(d=>`<li><a class="nplay a" href="#${DOC_TOPIC}-${d.id}" aria-label="Abrir ${esc(d.short)}">${IC.more}</a><div class="nbody"><b>${esc(d.short)}</b><small>${esc(d.t)}</small></div></li>`).join("")}</ul></section>
+ <section class="card"><div class="th"><h2>Repaso y resúmenes</h2></div><ul class="nlist">
+ <li><a class="nplay a" href="#repaso">${IC.play}</a><div class="nbody"><b>Repaso en audio (24+ temas)</b><small>Aduanero, tributario, cambiario y competencias básicas.</small></div></li>
+ <li><a class="nplay a" href="#infracciones">${IC.play}</a><div class="nbody"><b>Infracciones y sanciones</b><small>Resumen y texto completo.</small></div></li></ul></section>`;
+ app.innerHTML=h; document.title="Normas en audio · Estudio DIAN Gestor I";
+ const all={}; NORMA_GROUPS.forEach(s=>s.items.forEach(i=>all[i.id]=i));
+ app.querySelectorAll("[data-ng]").forEach(b=>b.onclick=()=>{ const it=all[b.dataset.ng]; playKey("g:"+it.id,it.txt,it.t,b.closest("li")) });
+ window.scrollTo(0,0);
+}
+/* ---- respaldo del progreso: no se borra solo ---- */
+try{ if(navigator.storage&&navigator.storage.persist) navigator.storage.persist().then(ok=>{try{localStorage.setItem("dian-persist",ok?"1":"0")}catch(e){}}) }catch(e){}
+function respaldoHTML(){
+ let p="";try{p=localStorage.getItem("dian-persist")}catch(e){}
+ return `<section class="card"><h2>Guardado y respaldo</h2><p class="muted">Tu progreso se guarda en este navegador, en este dispositivo${p==="1"?" y está protegido: el navegador no lo borra por falta de espacio":""}. Solo se borra si limpias los datos del sitio o si lo pides aquí.</p>
+ <div class="row"><button id="bkExp">Descargar respaldo</button><label class="btn">Restaurar respaldo<input type="file" id="bkImp" accept="application/json" hidden></label><button id="bkClr">Borrar mi progreso</button></div><p class="muted small" id="bkMsg"></p></section>`;
+}
+function respaldoBind(){
+ const msg=t=>{const m=document.getElementById("bkMsg"); if(m) m.textContent=t};
+ const e=document.getElementById("bkExp"); if(e) e.onclick=()=>{ const o={}; for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i); if(k&&k.startsWith("dian-")) o[k]=localStorage.getItem(k)} const b=new Blob([JSON.stringify(o)],{type:"application/json"}), a=document.createElement("a"); a.href=URL.createObjectURL(b); a.download="respaldo-estudio-dian.json"; document.body.appendChild(a); a.click(); a.remove(); msg("Respaldo descargado.") };
+ const i=document.getElementById("bkImp"); if(i) i.onchange=()=>{ const f=i.files[0]; if(!f) return; f.text().then(t=>{ const o=JSON.parse(t); Object.keys(o).forEach(k=>{ if(k.startsWith("dian-")) localStorage.setItem(k,o[k]) }); msg("Respaldo restaurado. Recargando…"); setTimeout(()=>location.reload(),600) }).catch(()=>msg("El archivo no es un respaldo válido.")) };
+ const c=document.getElementById("bkClr"); if(c) c.onclick=()=>{ if(c.dataset.s){ Object.keys(localStorage).filter(k=>k.startsWith("dian-")).forEach(k=>localStorage.removeItem(k)); location.reload() } else { c.dataset.s="1"; c.textContent="¿Seguro? Toca otra vez para borrar" } };
+}
+
 const ICN={
+ normas:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a8 8 0 0 0-8 8v6a3 3 0 0 0 3 3h1.5a1 1 0 0 0 1-1v-5a1 1 0 0 0-1-1H6v-2a6 6 0 0 1 12 0v2h-2.5a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1H17a3 3 0 0 0 3-3v-6a8 8 0 0 0-8-8Z"/></svg>',
  claves:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 16.8 6.1 20.1l1.3-6.6L2.5 8.9l6.6-.8L12 2Z"/></svg>',
  hoy:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2.8a1 1 0 0 1 1 1V5h8V3.8a1 1 0 1 1 2 0V5h.5A2.5 2.5 0 0 1 21 7.5v11A2.5 2.5 0 0 1 18.5 21h-13A2.5 2.5 0 0 1 3 18.5v-11A2.5 2.5 0 0 1 5.5 5H6V3.8a1 1 0 0 1 1-1ZM5 10v8.5c0 .28.22.5.5.5h13a.5.5 0 0 0 .5-.5V10H5Zm3 2.5h3v3H8v-3Z"/></svg>',
  estudiar:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.5 3A2.5 2.5 0 0 0 3 5.5v13A2.5 2.5 0 0 0 5.5 21H19a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H5.5ZM5 5.5a.5.5 0 0 1 .5-.5H18v11H5.5c-.17 0-.34.02-.5.06V5.5ZM5.5 18H18v1H5.5a.5.5 0 0 1 0-1Z"/></svg>',
@@ -2761,12 +3027,12 @@ const ICN={
  check:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.2 16.6 5 12.4l1.4-1.4 2.8 2.8 8.4-8.4L19 6.8l-9.8 9.8Z"/></svg>'
 };
 function navSet(id){
- const k=id===""||id==="hoy"?"hoy":id==="simulacro"?"simulacro":id==="progreso"?"progreso":(id==="claves"||id==="repaso"||id==="infracciones"||id.startsWith("r-"))?"claves":"estudiar";
+ const k=id===""||id==="hoy"?"hoy":id==="simulacro"?"simulacro":id==="progreso"?"progreso":id==="normas"?"normas":(id==="claves"||id==="repaso"||id==="infracciones"||id.startsWith("r-"))?"claves":"estudiar";
  document.querySelectorAll("#gnav a").forEach(a=>{ const on=a.dataset.k===k; a.classList.toggle("on",on); if(on) a.setAttribute("aria-current","page"); else a.removeAttribute("aria-current") });
 }
 function navInit(){
  const n=document.createElement("nav"); n.id="gnav"; n.setAttribute("aria-label","Secciones");
- const it=[["hoy","Hoy","#hoy"],["estudiar","Estudiar","#estudiar"],["claves","Claves","#claves"],["simulacro","Practicar","#simulacro"],["progreso","Progreso","#progreso"]];
+ const it=[["hoy","Hoy","#hoy"],["estudiar","Estudiar","#estudiar"],["claves","Claves","#claves"],["normas","Normas","#normas"],["simulacro","Practicar","#simulacro"],["progreso","Progreso","#progreso"]];
  n.innerHTML=it.map(([k,l,h])=>`<a href="${h}" data-k="${k}">${ICN[k]}<span>${l}</span></a>`).join("");
  document.body.appendChild(n);
 }
@@ -2779,7 +3045,7 @@ function hoyPage(){
  const allDone=PLAN7.every((_,i)=>dayDone(i+1));
  const hrs=m=>m>=60?(Math.floor(m/60)+" h"+(m%60?" "+(m%60)+" min":"")):(m+" min");
  let h=`<section class="pagehead"><p class="muted cap">${esc(dateLong())}</p>
-  <p class="muted"><b>${examDias()>0?"Faltan "+examDias()+" días para el examen (8 nov)":"Examen: 8 nov"}</b> · <a href="#claves">Ver claves</a> · <a href="#repaso">Repaso en audio</a> · <a href="#infracciones">Infracciones</a></p>
+  <p class="muted"><b>${examDias()>0?"Faltan "+examDias()+" días para el examen (8 nov)":"Examen: 8 nov"}</b> · <a href="#claves">Ver claves</a> · <a href="#repaso">Repaso en audio</a> · <a href="#infracciones">Infracciones</a> · <a href="#normas">Normas en audio</a></p>
   <h1>${started&&!over?`Día ${di} de 7`:over?"Tu semana terminó":"Tu semana de estudio"}</h1>
   <p class="lead"><b>${esc(day.t)}.</b> ${esc(day.d)}</p></section>`;
  if(!started){
@@ -2860,7 +3126,7 @@ function progresoPage(){
  h+=`</section>`;
  if(simExam.state==="done"){ const ids=new Set(simExam.ids), eq=qs.filter(q=>ids.has(q.id)), eo=eq.filter(q=>simExam.ans[q.id]===q.a).length;
   h+=`<section class="card"><h2>Último simulacro</h2><p><b>${eo} de ${eq.length}</b> correctas (${eq.length?Math.round(eo/eq.length*100):0} %).</p><div class="row"><button id="goExam">Ver resultado</button></div></section>`; }
- app.innerHTML=h; document.title="Progreso · Estudio DIAN Gestor I";
+ h+=respaldoHTML(); app.innerHTML=h; document.title="Progreso · Estudio DIAN Gestor I"; respaldoBind();
  const gb=document.getElementById("goBad"); if(gb) gb.onclick=()=>planGo({k:"repasar",g:""});
  const ge=document.getElementById("goExam"); if(ge) ge.onclick=()=>planGo({k:"simulacro",g:""});
  app.querySelectorAll("[data-g]").forEach(b=>b.onclick=()=>planGo({k:"practicar",g:b.dataset.g}));
@@ -3062,6 +3328,7 @@ function route(){const id=decodeURIComponent(location.hash.slice(1));
  if(id==="claves"){clavesPage();return}
  if(id==="repaso"){repasoPage();return}
  if(id==="infracciones"){infraccionesPage();return}
+ if(id==="normas"){normasPage();return}
  if(RP.some(r=>r.id===id)){repasoPage();setTimeout(()=>{const e=document.getElementById(id);e&&e.scrollIntoView()},50);return}
  if(id==="simulacro"){simPage();return}
  if(id.startsWith(DOC_TOPIC+"-")){const d=DOCS.find(x=>x.id===id.slice(DOC_TOPIC.length+1)); const t=T.find(x=>x.id===DOC_TOPIC); if(d&&t){docPage(t,d);return}}
@@ -3168,10 +3435,12 @@ function ttsSetRate(r){
  if(TTS.on&&!TTS.paused) TTS.rt=setTimeout(()=>{ if(TTS.on&&!TTS.paused) ttsGo(TTS.i,ttsPos()) },320);   // se aplica desde la palabra actual; varios toques seguidos se juntan
 }
 function ttsStep(d){
+ if(AF.on){afStep(d);return}
  let k=TTS_RATES.findIndex(v=>v>=TTS.rate-1e-9); if(k<0) k=TTS_RATES.length-1;
  k=Math.min(TTS_RATES.length-1,Math.max(0,k+d)); ttsSetRate(TTS_RATES[k]);
 }
 function ttsTogglePause(){
+ if(AF.on){afToggle();return}
  if(!TTS.on) return;
  if(TTS.paused){ TTS.paused=false; ttsGo(TTS.i,TTS.off) }
  else { TTS.off=ttsPos(); TTS.paused=true; TTS.tok++; clearTimeout(TTS.rt); try{speechSynthesis.cancel()}catch(e){}; ttsUI() }
@@ -3193,7 +3462,9 @@ function msSet(){
 }
 function msInit(){
  if(KA.ready||!("mediaSession" in navigator)) return; KA.ready=true;
- const h=(a,f)=>{try{navigator.mediaSession.setActionHandler(a,f)}catch(e){}};
+ const h0=(a,f)=>{try{navigator.mediaSession.setActionHandler(a,f)}catch(e){}};
+ const AFh={play:()=>{if(AF.a.paused)AF.a.play().catch(()=>{})},pause:()=>AF.a.pause(),previoustrack:()=>afSeek(-15),nexttrack:()=>afSeek(15),seekbackward:()=>afSeek(-15),seekforward:()=>afSeek(15),stop:()=>afStop()};
+ const h=(n,f)=>h0(n,e=>{ if(AF.on&&AFh[n]) AFh[n](e); else f(e) });
  h("play",()=>{ if(TTS.on&&TTS.paused) ttsTogglePause() });
  h("pause",()=>{ if(TTS.on&&!TTS.paused) ttsTogglePause() });
  h("previoustrack",()=>{ if(TTS.on) ttsGo(Math.max(0,TTS.i-1),0) });
@@ -3230,7 +3501,7 @@ function ttsBar(){
  b.innerHTML=`<div class="tp-top"><div class="tp-info"><div id="ttsLab" class="tlab" aria-live="polite"></div><div class="tp-prog" aria-hidden="true"><i id="ttsProg"></i></div></div><button id="ttsOpt" class="ic" aria-label="Más opciones" aria-expanded="false">${IC.more}</button></div>
  <div class="tp-ctrl"><div class="tp-tr"><button id="ttsPrev" class="ic" aria-label="Frase anterior">${IC.prev}</button><button id="ttsPause" class="ic main" aria-label="Pausar"></button><button id="ttsNext" class="ic" aria-label="Frase siguiente">${IC.next}</button><button id="ttsStop" class="ic ghost" aria-label="Detener">${IC.stop}</button></div>
  <div class="tp-speed" role="group" aria-label="Velocidad de lectura"><button id="ttsSlow" class="ic" aria-label="Más lento">${IC.minus}</button><output id="ttsRateTxt" class="rate"></output><button id="ttsFast" class="ic" aria-label="Más rápido">${IC.plus}</button></div></div>
- <div class="tp-more" id="ttsMore" hidden><label>Voz <select id="ttsVoice"></select></label><label class="chkline"><input type="checkbox" id="ttsWake"> Mantener la pantalla encendida</label><p class="hint">Con la pantalla apagada la lectura sigue en segundo plano en la mayoría de teléfonos Android. Si en el tuyo se corta, activa «Mantener la pantalla encendida» y baja el brillo.</p></div>`;
+ <div class="tp-more" id="ttsMore" hidden><label>Voz <select id="ttsVoice"></select></label><label class="chkline"><input type="checkbox" id="ttsWake"> Mantener la pantalla encendida</label><p class="hint">Con audio real (insignia verde en Normas y Repaso) sigue sonando con la pantalla apagada y con el navegador en segundo plano. Con la voz del dispositivo depende de tu teléfono: si se corta, activa «Mantener la pantalla encendida».</p></div>`;
  document.body.appendChild(b);
  b.querySelector("#ttsRateTxt").textContent=ttsRateTxt(TTS.rate);
  ttsVoiceFill(b); speechSynthesis.onvoiceschanged=()=>ttsVoiceFill(b);
@@ -3241,8 +3512,9 @@ function ttsBar(){
  b.querySelector("#ttsFast").onclick=()=>ttsStep(1);
  b.querySelector("#ttsStop").onclick=ttsStop;
  b.querySelector("#ttsPause").onclick=ttsTogglePause;
- b.querySelector("#ttsPrev").onclick=()=>ttsGo(Math.max(0,TTS.i-1));
- b.querySelector("#ttsNext").onclick=()=>{ if(TTS.i+1>=TTS.q.length) ttsStop(); else ttsGo(TTS.i+1) };
+ b.querySelector("#ttsPrev").onclick=()=>{ if(AF.on) afSeek(-15); else ttsGo(Math.max(0,TTS.i-1)) };
+ b.querySelector("#ttsNext").onclick=()=>{ if(AF.on){afSeek(15);return} if(TTS.i+1>=TTS.q.length) ttsStop(); else ttsGo(TTS.i+1) };
+ b.querySelector(".tp-prog").onclick=e=>{ if(!AF.on||!AF.a.duration) return; const r=e.currentTarget.getBoundingClientRect(); AF.a.currentTime=Math.max(0,Math.min(1,(e.clientX-r.left)/r.width))*AF.a.duration; afUI(); afMS() };
  return b;
 }
 function ttsGo(i,off){
@@ -3267,11 +3539,13 @@ function ttsGo(i,off){
  setTimeout(()=>{ if(tok===TTS.tok){ TTS.pend=Date.now(); speechSynthesis.speak(u) } },30);
 }
 function ttsStop(){
+ if(AF.on){afStop();return}
  TTS.tok++; TTS.on=false; TTS.paused=false; clearTimeout(TTS.rt); try{speechSynthesis.cancel()}catch(e){}
  if(TTS.el){TTS.el.classList.remove("reading");TTS.el=null}
  const b=document.getElementById("ttsbar"); if(b) b.classList.remove("on"); document.body.classList.remove("ttson"); kaStop();
 }
 function ttsPlay(text,label,el){
+ if(AF.on) afStop(true);
  if(!TTS.ok){alert("Tu navegador no permite lectura en voz alta.");return}
  if(TTS.el) TTS.el.classList.remove("reading");
  TTS.q=ttsChunks(ttsClean(text)); TTS.label=label||"Lectura"; TTS.on=true; TTS.el=el||null;
@@ -3351,6 +3625,7 @@ function ttsDecorate(){
 })();
 
 navInit();
+try{ if("serviceWorker" in navigator&&/^https?:/.test(location.protocol)) navigator.serviceWorker.register("sw.js").catch(()=>{}) }catch(e){}
 route();
 </script>
 

@@ -1,0 +1,12 @@
+ESTUDIO DIAN GESTOR I — cómo subirlo a GitHub (Pages)
+
+1. En tu repositorio de GitHub (el que ya usas), borra la versión anterior del HTML.
+2. Sube TODO el contenido de esta carpeta a la raíz del repositorio:
+   index.html, manifest.webmanifest, sw.js, icon-192.png, icon-512.png y la carpeta audio/ (con sus 47 archivos).
+   Con "Add file > Upload files" puedes arrastrar la carpeta completa; si GitHub se queja por el tamaño, sube audio/ en dos o tres tandas.
+3. Settings > Pages > Source: tu rama (main) y carpeta /(root). Espera 1-2 minutos.
+4. Abre la dirección de Pages en el celular. Menú del navegador > "Instalar app" o "Añadir a pantalla de inicio".
+   Instalada como app, el audio sigue con la pantalla apagada y con otras apps abiertas.
+5. Tu progreso se guarda en el navegador de ese dispositivo y el navegador lo protege. Respaldo: pestaña Progreso > Descargar respaldo.
+
+Importante: el progreso queda ligado a la dirección web. Si cambias la dirección (otro nombre de repositorio), restaura el respaldo.
